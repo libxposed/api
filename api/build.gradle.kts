@@ -73,7 +73,7 @@ publishing {
         }
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/LSPosed/LSPlant")
+            url = uri("https://maven.pkg.github.com/libxposed/api")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
