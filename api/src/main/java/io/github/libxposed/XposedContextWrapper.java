@@ -13,17 +13,35 @@ import java.nio.ByteBuffer;
 
 import io.github.libxposed.utils.DexParser;
 
+/**
+ * The type Xposed context wrapper.
+ */
 @SuppressWarnings("unused")
 public class XposedContextWrapper extends ContextWrapper implements XposedInterface {
 
+    /**
+     * Instantiates a new Xposed context wrapper.
+     *
+     * @param base the base
+     */
     XposedContextWrapper(XposedContext base) {
         super(base);
     }
 
+    /**
+     * Instantiates a new Xposed context wrapper.
+     *
+     * @param base the base
+     */
     public XposedContextWrapper(XposedContextWrapper base) {
         super(base);
     }
 
+    /**
+     * Gets api version.
+     *
+     * @return the api version
+     */
     final public int getAPIVersion() {
         return API;
     }
