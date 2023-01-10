@@ -1,8 +1,14 @@
 package io.github.libxposed;
 
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.res.Resources;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -513,4 +519,53 @@ public interface XposedInterface {
      */
     @Nullable
     DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException;
+
+
+    // Methods the same with context
+
+    /**
+     * Gets shared preferences.
+     *
+     * @param name the name
+     * @param mode the mode
+     * @return the shared preferences
+     */
+    SharedPreferences getSharedPreferences(String name, int mode);
+
+    /**
+     * Open file input file input stream.
+     *
+     * @param name the name
+     * @return the file input stream
+     * @throws FileNotFoundException the file not found exception
+     */
+    FileInputStream openFileInput(String name) throws FileNotFoundException;
+
+    /**
+     * File list string [ ].
+     *
+     * @return the string [ ]
+     */
+    String[] fileList();
+
+    /**
+     * Gets resources.
+     *
+     * @return the resources
+     */
+    Resources getResources();
+
+    /**
+     * Gets class loader.
+     *
+     * @return the class loader
+     */
+    ClassLoader getClassLoader();
+
+    /**
+     * Gets application info.
+     *
+     * @return the application info
+     */
+    ApplicationInfo getApplicationInfo();
 }
