@@ -24,11 +24,19 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_7
         sourceCompatibility = JavaVersion.VERSION_1_7
     }
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
 publishing {
     publications {
-        fun MavenPublication.setup() {
+        register<MavenPublication>("api") {
+            artifactId = "api"
             group = "io.github.libxposed"
             version = "100"
             pom {
@@ -52,10 +60,9 @@ publishing {
                     url.set("https://github.com/libxposed/api")
                 }
             }
-        }
-        register<MavenPublication>("api") {
-            artifactId = "api"
-            setup()
+            afterEvaluate {
+                from(components.getByName("release"))
+            }
         }
     }
     repositories {
