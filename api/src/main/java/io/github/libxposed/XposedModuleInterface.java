@@ -84,14 +84,6 @@ public interface XposedModuleInterface {
         ClassLoader getClassLoader();
 
         /**
-         * Gets process name.
-         *
-         * @return the process name
-         */
-        @NonNull
-        String getProcessName();
-
-        /**
          * Is first application boolean.
          *
          * @return the boolean
