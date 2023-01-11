@@ -47,6 +47,14 @@ public interface XposedModuleInterface {
         Bundle getExtras();
     }
 
+    interface SystemServerLoadedParam {
+        @NonNull
+        ClassLoader getClassLoader();
+
+        @Nullable
+        Bundle getExtras();
+    }
+
     /**
      * The interface Package loaded param.
      */
@@ -105,4 +113,6 @@ public interface XposedModuleInterface {
      * @param param the param
      */
     void onPackageLoaded(@NonNull PackageLoadedParam param);
+
+    void onSystemServerLoaded(@NonNull SystemServerLoadedParam param);
 }

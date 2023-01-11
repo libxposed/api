@@ -21,4 +21,9 @@ public abstract class XposedModule extends XposedContextWrapper implements Xpose
     public void onPackageLoaded(@NonNull PackageLoadedParam param) {
 
     }
+
+    @Override
+    public void onSystemServerLoaded(@NonNull SystemServerLoadedParam param) {
+
+    }
 }
