@@ -24,7 +24,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      *
      * @param base the base
      */
-    XposedContextWrapper(XposedContext base) {
+    XposedContextWrapper(@NonNull XposedContext base) {
         super(base);
     }
 
@@ -33,7 +33,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      *
      * @param base the base
      */
-    public XposedContextWrapper(XposedContextWrapper base) {
+    public XposedContextWrapper(@NonNull XposedContextWrapper base) {
         super(base);
     }
 
@@ -46,6 +46,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
         return API;
     }
 
+    @NonNull
     @Override
     final public XposedContext getBaseContext() {
         return (XposedContext) super.getBaseContext();
@@ -73,66 +74,79 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
         return getBaseContext().getFrameworkPrivilege();
     }
 
+    @Nullable
     @Override
     final public Object featuredMethod(String name, Object... args) {
         return getBaseContext().featuredMethod(name, args);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
+    @Nullable
     @Override
     final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, priority, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
+    @Nullable
     @Override
     final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, priority, hooker);

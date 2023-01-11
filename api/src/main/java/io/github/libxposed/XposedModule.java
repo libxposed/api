@@ -13,7 +13,7 @@ public abstract class XposedModule extends XposedContextWrapper implements Xpose
      * @param base  the base
      * @param param the param
      */
-    public XposedModule(XposedContext base, @NonNull ModuleLoadedParam param) {
+    public XposedModule(@NonNull XposedContext base, @NonNull ModuleLoadedParam param) {
         super(base);
     }
 
