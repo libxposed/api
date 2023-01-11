@@ -46,19 +46,6 @@ public interface XposedInterface {
     int FRAMEWORK_PRIVILEGE_EMBEDDED = 3;
 
     /**
-     * The default hook priority.
-     */
-    int PRIORITY_DEFAULT = 50;
-    /**
-     * Execute the hook callback late.
-     */
-    int PRIORITY_LOWEST = -10000;
-    /**
-     * Execute the hook callback early.
-     */
-    int PRIORITY_HIGHEST = 10000;
-
-    /**
      * The interface Before hook callback.
      *
      * @param <T> the type parameter
@@ -320,24 +307,6 @@ public interface XposedInterface {
     }
 
     /**
-     * The exception thrown when a hook fails
-     */
-    class HookFailedException extends RuntimeException {
-
-        public HookFailedException(String message) {
-            super(message);
-        }
-
-        public HookFailedException(Throwable cause) {
-            super(cause);
-        }
-
-        public HookFailedException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
-    /**
      * Gets framework name.
      *
      * @return the framework name
@@ -374,7 +343,6 @@ public interface XposedInterface {
      * @param args the args
      * @return the object
      */
-    @Nullable
     Object featuredMethod(String name, Object... args);
 
     /**
@@ -383,9 +351,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker);
 
     /**
@@ -394,9 +361,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker);
 
     /**
@@ -405,9 +371,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker);
 
     /**
@@ -417,9 +382,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker);
 
     /**
@@ -429,9 +393,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker);
 
     /**
@@ -441,9 +404,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker);
 
     /**
@@ -453,9 +415,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker);
 
     /**
@@ -465,9 +426,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker);
 
     /**
@@ -477,9 +437,8 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker);
 
     /**
@@ -490,9 +449,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker);
 
     /**
@@ -503,9 +461,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker);
 
     /**
@@ -516,9 +473,8 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
-     * @throws HookFailedException if hook fails
      */
-    @NonNull
+    @Nullable
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker);
 
     /**
