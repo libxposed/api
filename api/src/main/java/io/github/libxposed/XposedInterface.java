@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.ConcurrentModificationException;
 
+import io.github.libxposed.errors.HookFailedError;
 import io.github.libxposed.utils.DexParser;
 
 /**
@@ -44,6 +45,19 @@ public interface XposedInterface {
      * The constant FRAMEWORK_PRIVILEGE_EMBEDDED.
      */
     int FRAMEWORK_PRIVILEGE_EMBEDDED = 3;
+
+    /**
+     * The default hook priority.
+     */
+    int PRIORITY_DEFAULT = 50;
+    /**
+     * Execute the hook callback late.
+     */
+    int PRIORITY_LOWEST = -10000;
+    /**
+     * Execute the hook callback early.
+     */
+    int PRIORITY_HIGHEST = 10000;
 
     /**
      * The interface Before hook callback.
@@ -343,6 +357,7 @@ public interface XposedInterface {
      * @param args the args
      * @return the object
      */
+    @Nullable
     Object featuredMethod(String name, Object... args);
 
     /**
@@ -351,8 +366,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker);
 
     /**
@@ -361,8 +378,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker);
 
     /**
@@ -371,8 +390,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker);
 
     /**
@@ -382,8 +403,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker);
 
     /**
@@ -393,8 +416,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker);
 
     /**
@@ -404,8 +429,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker);
 
     /**
@@ -415,8 +442,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker);
 
     /**
@@ -426,8 +455,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker);
 
     /**
@@ -437,8 +468,10 @@ public interface XposedInterface {
      * @param origin the origin
      * @param hooker the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker);
 
     /**
@@ -449,8 +482,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker);
 
     /**
@@ -461,8 +496,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker);
 
     /**
@@ -473,8 +510,10 @@ public interface XposedInterface {
      * @param priority the priority
      * @param hooker   the hooker
      * @return the method unhooker
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @throws HookFailedError if hook fails due to framework internal error
      */
-    @Nullable
+    @NonNull
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker);
 
     /**
