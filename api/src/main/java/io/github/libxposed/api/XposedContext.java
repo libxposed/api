@@ -1,4 +1,4 @@
-package io.github.libxposed;
+package io.github.libxposed.api;
 
 import android.content.Context;
 

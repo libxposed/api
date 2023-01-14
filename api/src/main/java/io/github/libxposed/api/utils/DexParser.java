@@ -1,4 +1,4 @@
-package io.github.libxposed.utils;
+package io.github.libxposed.api.utils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

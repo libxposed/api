@@ -1,4 +1,4 @@
-package io.github.libxposed;
+package io.github.libxposed.api;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -16,8 +16,8 @@ import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.ConcurrentModificationException;
 
-import io.github.libxposed.errors.HookFailedError;
-import io.github.libxposed.utils.DexParser;
+import io.github.libxposed.api.errors.HookFailedError;
+import io.github.libxposed.api.utils.DexParser;
 
 /**
  * The interface Xposed interface.

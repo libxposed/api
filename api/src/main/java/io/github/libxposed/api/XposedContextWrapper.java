@@ -1,4 +1,4 @@
-package io.github.libxposed;
+package io.github.libxposed.api;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -11,7 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
-import io.github.libxposed.utils.DexParser;
+import io.github.libxposed.api.utils.DexParser;
 
 /**
  * The type Xposed context wrapper.
