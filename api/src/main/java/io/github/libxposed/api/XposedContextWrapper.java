@@ -14,170 +14,233 @@ import java.nio.ByteBuffer;
 import io.github.libxposed.api.utils.DexParser;
 
 /**
- * The type Xposed context wrapper.
+ * Wrap of {@link XposedContext} used by the modules for the purpose of shielding framework implementation details.
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"deprecation", "unused"})
 public class XposedContextWrapper extends ContextWrapper implements XposedInterface {
 
-    /**
-     * Instantiates a new Xposed context wrapper.
-     *
-     * @param base the base
-     */
     XposedContextWrapper(@NonNull XposedContext base) {
         super(base);
     }
 
-    /**
-     * Instantiates a new Xposed context wrapper.
-     *
-     * @param base the base
-     */
-    public XposedContextWrapper(@NonNull XposedContextWrapper base) {
+    XposedContextWrapper(@NonNull XposedContextWrapper base) {
         super(base);
     }
 
     /**
-     * Gets api version.
+     * Get the Xposed API version of current implementation.
      *
-     * @return the api version
+     * @return API version
      */
     final public int getAPIVersion() {
         return API;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public XposedContext getBaseContext() {
         return (XposedContext) super.getBaseContext();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public String getFrameworkName() {
         return getBaseContext().getFrameworkName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public String getFrameworkVersion() {
         return getBaseContext().getFrameworkVersion();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public long getFrameworkVersionCode() {
         return getBaseContext().getFrameworkVersionCode();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public int getFrameworkPrivilege() {
         return getBaseContext().getFrameworkPrivilege();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
     @Nullable
     @Override
     final public Object featuredMethod(String name, Object... args) {
         return getBaseContext().featuredMethod(name, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
     final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, priority, hooker);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public boolean deoptimize(@NonNull Method method) {
         return getBaseContext().deoptimize(method);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
         return getBaseContext().deoptimize(constructor);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public void log(@NonNull String message) {
         getBaseContext().log(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final public void log(@NonNull String message, @NonNull Throwable throwable) {
         getBaseContext().log(message, throwable);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
     @Override
     final public DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException {
         return getBaseContext().parseDex(dexData, includeAnnotations);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     final protected void attachBaseContext(Context base) {
         if (base instanceof XposedContext || base instanceof XposedContextWrapper) {

@@ -1,128 +1,95 @@
 package io.github.libxposed.api;
 
 import android.content.pm.ApplicationInfo;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
- * The interface Xposed module interface.
+ * Interface for module initialization.
  */
 @SuppressWarnings("unused")
 public interface XposedModuleInterface {
     /**
-     * The interface Module loaded param.
+     * Wraps information about the process in which the module is loaded.
      */
     interface ModuleLoadedParam {
         /**
-         * Is system server boolean.
+         * Get information about whether the module is running in system server.
          *
-         * @return the boolean
+         * @return {@code true} if the module is running in system server
          */
         boolean isSystemServer();
 
         /**
-         * Gets process name.
+         * Get the process name.
          *
-         * @return the process name
+         * @return The process name
          */
         @NonNull
         String getProcessName();
-
-        /**
-         * Gets app data dir.
-         *
-         * @return the app data dir
-         */
-        @NonNull
-        String getAppDataDir();
-
-        /**
-         * Gets extras.
-         *
-         * @return the extras
-         */
-        @Nullable
-        Bundle getExtras();
     }
 
     /**
-     * The interface System server loaded param.
+     * Wraps information about system server.
      */
     interface SystemServerLoadedParam {
         /**
-         * Gets class loader.
+         * Get the class loader of system server.
          *
-         * @return the class loader
+         * @return The class loader
          */
         @NonNull
         ClassLoader getClassLoader();
-
-        /**
-         * Gets extras.
-         *
-         * @return the extras
-         */
-        @Nullable
-        Bundle getExtras();
     }
 
     /**
-     * The interface Package loaded param.
+     * Wraps information about the package being loaded.
      */
     interface PackageLoadedParam {
         /**
-         * Gets package name.
+         * Get the package name of the package being loaded.
          *
-         * @return the package name
+         * @return The package name.
          */
         @NonNull
         String getPackageName();
 
         /**
-         * Gets app info.
+         * Get the ApplicationInfo of the package being loaded.
          *
-         * @return the app info
+         * @return The ApplicationInfo.
          */
         @NonNull
         ApplicationInfo getAppInfo();
 
         /**
-         * Gets class loader.
+         * Get the class loader of the package being loaded.
          *
-         * @return the class loader
+         * @return The class loader.
          */
         @NonNull
         ClassLoader getClassLoader();
 
         /**
-         * Is first application boolean.
+         * Get information about whether is this package the first and main package of the app process.
          *
-         * @return the boolean
+         * @return {@code true} if this is the first package.
          */
-        boolean isFirstApplication();
-
-        /**
-         * Gets extras.
-         *
-         * @return the extras
-         */
-        @Nullable
-        Bundle getExtras();
+        boolean isFirstPackage();
     }
 
     /**
-     * On package loaded.
+     * Get notified when a package is loaded into the app process.<br/>
+     * This callback could be invoked multiple times for the same process on each package.
      *
-     * @param param the param
+     * @param param Information about the package being loaded
      */
     void onPackageLoaded(@NonNull PackageLoadedParam param);
 
     /**
-     * On system server loaded.
+     * Get notified when the system server is loaded.
      *
-     * @param param the param
+     * @param param Information about system server
      */
     void onSystemServerLoaded(@NonNull SystemServerLoadedParam param);
 }

@@ -20,29 +20,30 @@ import io.github.libxposed.api.errors.HookFailedError;
 import io.github.libxposed.api.utils.DexParser;
 
 /**
- * The interface Xposed interface.
+ * Xposed interface for modules to operate on application processes.
  */
 @SuppressWarnings("unused")
 public interface XposedInterface {
     /**
-     * The constant API.
+     * SDK API version.
      */
     int API = 100;
 
     /**
-     * The constant FRAMEWORK_PRIVILEGE_ROOT.
+     * Indicates that the framework is running as root.
      */
     int FRAMEWORK_PRIVILEGE_ROOT = 0;
     /**
-     * The constant FRAMEWORK_PRIVILEGE_CONTAINER.
+     * Indicates that the framework is running in a container with a fake system_server.
      */
     int FRAMEWORK_PRIVILEGE_CONTAINER = 1;
     /**
-     * The constant FRAMEWORK_PRIVILEGE_APP.
+     * Indicates that the framework is running as a different app, which may have at most shell permission.
      */
     int FRAMEWORK_PRIVILEGE_APP = 2;
     /**
-     * The constant FRAMEWORK_PRIVILEGE_EMBEDDED.
+     * Indicates that the framework is embedded in the hooked app,
+     * which means {@link #getSharedPreferences} will be null and remote file is unsupported.
      */
     int FRAMEWORK_PRIVILEGE_EMBEDDED = 3;
 
@@ -321,42 +322,46 @@ public interface XposedInterface {
     }
 
     /**
-     * Gets framework name.
+     * Get the Xposed framework name of current implementation.
      *
-     * @return the framework name
+     * @return Framework name
      */
     @NonNull
     String getFrameworkName();
 
     /**
-     * Gets framework version.
+     * Get the Xposed framework version of current implementation.
      *
-     * @return the framework version
+     * @return Framework version
      */
     @NonNull
     String getFrameworkVersion();
 
     /**
-     * Gets framework version code.
+     * Get the Xposed framework version code of current implementation.
      *
-     * @return the framework version code
+     * @return Framework version code
      */
     long getFrameworkVersionCode();
 
     /**
-     * Gets framework privilege.
+     * Get the Xposed framework privilege of current implementation.
      *
-     * @return the framework privilege
+     * @return Framework privilege
      */
     int getFrameworkPrivilege();
 
     /**
-     * Featured method object.
+     * Additional methods provided by specific Xposed framework.
      *
-     * @param name the name
-     * @param args the args
-     * @return the object
+     * @param name Featured method name
+     * @param args Featured method arguments
+     * @return Featured method result
+     * @throws UnsupportedOperationException If the framework does not provide a method with given name
+     * @deprecated Normally, modules should never rely on implementation details about the Xposed framework,
+     * but if really necessary, this method can be used to acquire such information
      */
+    @Deprecated
     @Nullable
     Object featuredMethod(String name, Object... args);
 
@@ -367,7 +372,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker);
@@ -379,7 +384,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker);
@@ -391,7 +396,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker);
@@ -404,7 +409,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker);
@@ -417,7 +422,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker);
@@ -430,7 +435,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker);
@@ -443,7 +448,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker);
@@ -456,7 +461,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker);
@@ -469,7 +474,7 @@ public interface XposedInterface {
      * @param hooker the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker);
@@ -483,7 +488,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker);
@@ -497,7 +502,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker);
@@ -511,7 +516,7 @@ public interface XposedInterface {
      * @param hooker   the hooker
      * @return the method unhooker
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
-     * @throws HookFailedError if hook fails due to framework internal error
+     * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker);
@@ -560,7 +565,7 @@ public interface XposedInterface {
     DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException;
 
 
-    // Methods the same with context
+    // Methods the same with Context
 
     /**
      * Gets shared preferences.
