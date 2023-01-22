@@ -50,7 +50,7 @@ jobs:
       uses: actions/upload-pages-artifact@v1
       with:
         # Upload entire repository
-        path: 'api/api/build/intermediates/java_doc_dir/release'
+        path: 'api/build/intermediates/java_doc_dir/release'
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@main
