@@ -549,7 +549,7 @@ public interface XposedInterface {
      * @throws IllegalAccessException    the illegal access exception
      */
     @Nullable
-    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException;
+    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException, InstantiationException;
 
     /**
      * Log.

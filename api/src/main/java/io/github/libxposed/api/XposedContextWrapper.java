@@ -222,7 +222,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
 
     @Nullable
     @Override
-    public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException {
+    public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException, InstantiationException {
         return getBaseContext().newInstanceOrigin(constructor, args);
     }
 
