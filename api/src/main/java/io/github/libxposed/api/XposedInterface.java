@@ -126,18 +126,6 @@ public interface XposedInterface {
         /**
          * Invoke origin object.
          *
-         * @param thisObject the this object
-         * @param args       the args
-         * @return the object
-         * @throws InvocationTargetException the invocation target exception
-         * @throws IllegalAccessException    the illegal access exception
-         */
-        @Nullable
-        Object invokeOrigin(@Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalAccessException;
-
-        /**
-         * Invoke origin object.
-         *
          * @return the object
          * @throws InvocationTargetException the invocation target exception
          * @throws IllegalAccessException    the illegal access exception
@@ -529,7 +517,7 @@ public interface XposedInterface {
     /**
      * Invoke origin object.
      *
-     * @param method the method
+     * @param method     the method
      * @param thisObject the this object
      * @param args       the args
      * @return the object
@@ -537,19 +525,22 @@ public interface XposedInterface {
      * @throws IllegalAccessException    the illegal access exception
      */
     @Nullable
-    Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalAccessException;
+    Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+
+    @Nullable
+    Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
      * new origin object.
      *
      * @param constructor the constructor
-     * @param args       the args
+     * @param args        the args
      * @return the object
      * @throws InvocationTargetException the invocation target exception
      * @throws IllegalAccessException    the illegal access exception
      */
     @Nullable
-    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException, InstantiationException;
+    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
     /**
      * Log.
