@@ -226,10 +226,16 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
         return getBaseContext().invokeSpecial(method, thisObject, args);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
         return getBaseContext().newInstanceOrigin(constructor, args);
+    }
+
+    @NonNull
+    @Override
+    public <T, U extends T> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
+        return getBaseContext().newInstanceSpecial(constructor, subClass, args);
     }
 
     /**

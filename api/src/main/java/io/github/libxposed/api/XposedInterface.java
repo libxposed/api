@@ -131,7 +131,7 @@ public interface XposedInterface {
          * @throws IllegalAccessException    the illegal access exception
          */
         @Nullable
-        Object invokeOrigin() throws InvocationTargetException, IllegalAccessException;
+        Object invokeOrigin() throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
         /**
          * Sets extra.
@@ -539,8 +539,12 @@ public interface XposedInterface {
      * @throws InvocationTargetException the invocation target exception
      * @throws IllegalAccessException    the illegal access exception
      */
-    @Nullable
+    @NonNull
     <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
+
+
+    @NonNull
+    <T, U extends T> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
     /**
      * Log.
