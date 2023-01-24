@@ -226,18 +226,6 @@ public interface XposedInterface {
         /**
          * Invoke origin object.
          *
-         * @param thisObject the this object
-         * @param args       the args
-         * @return the object
-         * @throws InvocationTargetException the invocation target exception
-         * @throws IllegalAccessException    the illegal access exception
-         */
-        @Nullable
-        Object invokeOrigin(@Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalAccessException;
-
-        /**
-         * Invoke origin object.
-         *
          * @return the object
          * @throws InvocationTargetException the invocation target exception
          * @throws IllegalAccessException    the illegal access exception
@@ -537,6 +525,31 @@ public interface XposedInterface {
      * @return the boolean
      */
     <T> boolean deoptimize(@NonNull Constructor<T> constructor);
+
+    /**
+     * Invoke origin object.
+     *
+     * @param method the method
+     * @param thisObject the this object
+     * @param args       the args
+     * @return the object
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalAccessException    the illegal access exception
+     */
+    @Nullable
+    Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalAccessException;
+
+    /**
+     * new origin object.
+     *
+     * @param constructor the constructor
+     * @param args       the args
+     * @return the object
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalAccessException    the illegal access exception
+     */
+    @Nullable
+    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException;
 
     /**
      * Log.

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
@@ -211,6 +212,18 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
     @Override
     final public <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
         return getBaseContext().deoptimize(constructor);
+    }
+
+    @Nullable
+    @Override
+    public Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        return getBaseContext().invokeOrigin(method, thisObject, args);
+    }
+
+    @Nullable
+    @Override
+    public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object[] args) throws InvocationTargetException, IllegalAccessException {
+        return getBaseContext().newInstanceOrigin(constructor, args);
     }
 
     /**
