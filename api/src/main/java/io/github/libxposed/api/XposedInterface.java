@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 
+import androidx.annotation.Discouraged;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -334,10 +335,8 @@ public interface XposedInterface {
      * @param args Featured method arguments
      * @return Featured method result
      * @throws UnsupportedOperationException If the framework does not provide a method with given name
-     * @deprecated Normally, modules should never rely on implementation details about the Xposed framework,
-     * but if really necessary, this method can be used to acquire such information
      */
-    @Deprecated
+    @Discouraged(message = "Normally, modules should never rely on specific implementation of the Xposed framework. But if really necessary, this method can be used to acquire such information.")
     @Nullable
     Object featuredMethod(String name, Object... args);
 

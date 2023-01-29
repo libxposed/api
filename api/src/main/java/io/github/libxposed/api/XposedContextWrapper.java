@@ -1,5 +1,6 @@
 package io.github.libxposed.api;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.ContextWrapper;
 
@@ -17,7 +18,8 @@ import io.github.libxposed.api.utils.DexParser;
 /**
  * Wrap of {@link XposedContext} used by the modules for the purpose of shielding framework implementation details.
  */
-@SuppressWarnings({"deprecation", "unused"})
+@SuppressWarnings({"unused"})
+@SuppressLint("DiscouragedApi")
 public class XposedContextWrapper extends ContextWrapper implements XposedInterface {
 
     XposedContextWrapper(@NonNull XposedContext base) {
@@ -83,7 +85,6 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
     /**
      * {@inheritDoc}
      */
-    @Deprecated
     @Nullable
     @Override
     final public Object featuredMethod(String name, Object... args) {
