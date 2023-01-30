@@ -35,7 +35,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      *
      * @return API version
      */
-    final public int getAPIVersion() {
+    public final int getAPIVersion() {
         return API;
     }
 
@@ -44,7 +44,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public XposedContext getBaseContext() {
+    public final XposedContext getBaseContext() {
         return (XposedContext) super.getBaseContext();
     }
 
@@ -53,7 +53,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public String getFrameworkName() {
+    public final String getFrameworkName() {
         return getBaseContext().getFrameworkName();
     }
 
@@ -62,7 +62,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public String getFrameworkVersion() {
+    public final String getFrameworkVersion() {
         return getBaseContext().getFrameworkVersion();
     }
 
@@ -70,7 +70,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public long getFrameworkVersionCode() {
+    public final long getFrameworkVersionCode() {
         return getBaseContext().getFrameworkVersionCode();
     }
 
@@ -78,7 +78,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public int getFrameworkPrivilege() {
+    public final int getFrameworkPrivilege() {
         return getBaseContext().getFrameworkPrivilege();
     }
 
@@ -87,7 +87,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @Nullable
     @Override
-    final public Object featuredMethod(String name, Object... args) {
+    public final Object featuredMethod(String name, Object... args) {
         return getBaseContext().featuredMethod(name, args);
     }
 
@@ -96,7 +96,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker) {
+    public final MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
@@ -105,7 +105,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker) {
+    public final MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
@@ -114,7 +114,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker) {
+    public final MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
@@ -123,7 +123,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker) {
+    public final MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, int priority, @NonNull BeforeHooker<Method> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
@@ -132,7 +132,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker) {
+    public final MethodUnhooker<AfterHooker<Method>, Method> hookAfter(@NonNull Method origin, int priority, @NonNull AfterHooker<Method> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
@@ -141,7 +141,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker) {
+    public final MethodUnhooker<Hooker<Method>, Method> hook(@NonNull Method origin, int priority, @NonNull Hooker<Method> hooker) {
         return getBaseContext().hook(origin, priority, hooker);
     }
 
@@ -150,7 +150,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, hooker);
     }
 
@@ -159,7 +159,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, hooker);
     }
 
@@ -168,7 +168,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, hooker);
     }
 
@@ -177,7 +177,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<BeforeHooker<Constructor<T>>, Constructor<T>> hookBefore(@NonNull Constructor<T> origin, int priority, @NonNull BeforeHooker<Constructor<T>> hooker) {
         return getBaseContext().hookBefore(origin, priority, hooker);
     }
 
@@ -186,7 +186,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<AfterHooker<Constructor<T>>, Constructor<T>> hookAfter(@NonNull Constructor<T> origin, int priority, @NonNull AfterHooker<Constructor<T>> hooker) {
         return getBaseContext().hookAfter(origin, priority, hooker);
     }
 
@@ -195,7 +195,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @NonNull
     @Override
-    final public <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker) {
+    public final <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker) {
         return getBaseContext().hook(origin, priority, hooker);
     }
 
@@ -203,7 +203,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public boolean deoptimize(@NonNull Method method) {
+    public final boolean deoptimize(@NonNull Method method) {
         return getBaseContext().deoptimize(method);
     }
 
@@ -211,31 +211,43 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
+    public final <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
         return getBaseContext().deoptimize(constructor);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
     @Override
-    public Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
+    public final Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
         return getBaseContext().invokeOrigin(method, thisObject, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Nullable
     @Override
-    public Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
+    public final Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
         return getBaseContext().invokeSpecial(method, thisObject, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
-    public <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
+    public final <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
         return getBaseContext().newInstanceOrigin(constructor, args);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @NonNull
     @Override
-    public <T, U> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
+    public final <T, U> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
         return getBaseContext().newInstanceSpecial(constructor, subClass, args);
     }
 
@@ -243,7 +255,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public void log(@NonNull String message) {
+    public final void log(@NonNull String message) {
         getBaseContext().log(message);
     }
 
@@ -251,7 +263,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final public void log(@NonNull String message, @NonNull Throwable throwable) {
+    public final void log(@NonNull String message, @NonNull Throwable throwable) {
         getBaseContext().log(message, throwable);
     }
 
@@ -260,7 +272,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      */
     @Nullable
     @Override
-    final public DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException {
+    public final DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException {
         return getBaseContext().parseDex(dexData, includeAnnotations);
     }
 
@@ -268,7 +280,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
      * {@inheritDoc}
      */
     @Override
-    final protected void attachBaseContext(Context base) {
+    protected final void attachBaseContext(Context base) {
         if (base instanceof XposedContext || base instanceof XposedContextWrapper) {
             super.attachBaseContext(base);
         } else {

@@ -129,6 +129,7 @@ public interface XposedInterface {
          *
          * @return the object
          * @throws InvocationTargetException the invocation target exception
+         * @throws IllegalArgumentException  the illegal argument exception
          * @throws IllegalAccessException    the illegal access exception
          */
         @Nullable
@@ -521,27 +522,56 @@ public interface XposedInterface {
      * @param args       the args
      * @return the object
      * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalArgumentException  the illegal argument exception
      * @throws IllegalAccessException    the illegal access exception
      */
     @Nullable
     Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
+    /**
+     * Invoke special object.
+     *
+     * @param method     the method
+     * @param thisObject the this object
+     * @param args       the args
+     * @return the object
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalArgumentException  the illegal argument exception
+     * @throws IllegalAccessException    the illegal access exception
+     */
     @Nullable
     Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
      * new origin object.
      *
+     * @param <T>         the type parameter
      * @param constructor the constructor
      * @param args        the args
      * @return the object
      * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalArgumentException  the illegal argument exception
      * @throws IllegalAccessException    the illegal access exception
+     * @throws InstantiationException    the instantiation exception
      */
     @NonNull
     <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
 
+    /**
+     * New instance special u.
+     *
+     * @param <T>         the type parameter
+     * @param <U>         the type parameter
+     * @param constructor the constructor
+     * @param subClass    the sub class
+     * @param args        the args
+     * @return the u
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalArgumentException  the illegal argument exception
+     * @throws IllegalAccessException    the illegal access exception
+     * @throws InstantiationException    the instantiation exception
+     */
     @NonNull
     <T, U> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
