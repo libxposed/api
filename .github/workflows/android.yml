@@ -36,7 +36,7 @@ jobs:
         echo 'org.gradle.parallel=true' >> gradle.properties
         echo 'org.gradle.vfs.watch=true' >> gradle.properties
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
-        ./gradlew :api:publishToMavenLocal
+        ./gradlew publishToMavenLocal
         ./gradlew --stop
       env:
         ORG_GRADLE_PROJECT_signingKey: ${{ secrets.maven_pgp_signingKey }}
