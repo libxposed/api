@@ -89,24 +89,10 @@ public interface DexParser extends Closeable {
         @NonNull
         StringId getName();
     }
-
-    /**
-     * The interface Type id.
-     */
-    interface TypeId {
-        /**
-         * Gets descriptor.
-         *
-         * @return the descriptor
-         */
-        @NonNull
-        StringId getDescriptor();
-    }
-
     /**
      * The interface Id.
      */
-    interface Id {
+    interface Id<Self> extends Comparable<Self> {
         /**
          * Gets id.
          *
@@ -116,9 +102,23 @@ public interface DexParser extends Closeable {
     }
 
     /**
+     * The interface Type id.
+     */
+    interface TypeId extends Id<TypeId> {
+        /**
+         * Gets descriptor.
+         *
+         * @return the descriptor
+         */
+        @NonNull
+        StringId getDescriptor();
+    }
+
+
+    /**
      * The interface String id.
      */
-    interface StringId extends Id {
+    interface StringId extends Id<StringId> {
         /**
          * Gets string.
          *
@@ -131,7 +131,7 @@ public interface DexParser extends Closeable {
     /**
      * The interface Field id.
      */
-    interface FieldId extends Id {
+    interface FieldId extends Id<FieldId> {
         /**
          * Gets type.
          *
@@ -160,7 +160,7 @@ public interface DexParser extends Closeable {
     /**
      * The interface Method id.
      */
-    interface MethodId extends Id {
+    interface MethodId extends Id<MethodId> {
         /**
          * Gets declaring class.
          *
@@ -189,7 +189,7 @@ public interface DexParser extends Closeable {
     /**
      * The interface Proto id.
      */
-    interface ProtoId extends Id {
+    interface ProtoId extends Id<ProtoId> {
         /**
          * Gets shorty.
          *
