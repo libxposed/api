@@ -1,8 +1,10 @@
 package io.github.libxposed.api;
 
 import android.content.pm.ApplicationInfo;
+import android.os.Build;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 /**
  * Interface for module initialization.
@@ -61,6 +63,15 @@ public interface XposedModuleInterface {
          */
         @NonNull
         ApplicationInfo getAppInfo();
+
+        /**
+         * Gets default class loader.
+         *
+         * @return the default class loader
+         */
+        @RequiresApi(Build.VERSION_CODES.Q)
+        @NonNull
+        ClassLoader getDefaultClassLoader();
 
         /**
          * Get the class loader of the package being loaded.

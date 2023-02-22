@@ -7,11 +7,10 @@ plugins {
 android {
     namespace = "io.github.libxposed.api"
     compileSdk = 33
-    buildToolsVersion = "33.0.1"
+    buildToolsVersion = "33.0.2"
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 33
         consumerProguardFiles("proguard-rules.pro")
     }
 
@@ -21,8 +20,8 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_1_7
-        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_1_8
     }
 
     publishing {
