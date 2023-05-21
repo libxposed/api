@@ -92,5 +92,5 @@ signing {
 
 
 dependencies {
-    compileOnly("androidx.annotation:annotation:1.5.0")
+    compileOnly("androidx.annotation:annotation:1.6.0")
 }
