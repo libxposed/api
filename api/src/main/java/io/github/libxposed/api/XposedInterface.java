@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
 
-import androidx.annotation.Discouraged;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -328,18 +327,6 @@ public interface XposedInterface {
      * @return Framework privilege
      */
     int getFrameworkPrivilege();
-
-    /**
-     * Additional methods provided by specific Xposed framework.
-     *
-     * @param name Featured method name
-     * @param args Featured method arguments
-     * @return Featured method result
-     * @throws UnsupportedOperationException If the framework does not provide a method with given name
-     */
-    @Discouraged(message = "Normally, modules should never rely on specific implementation of the Xposed framework. But if really necessary, this method can be used to acquire such information.")
-    @Nullable
-    Object featuredMethod(String name, Object... args);
 
     /**
      * Hook before method unhooker.

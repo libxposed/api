@@ -85,15 +85,6 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
     /**
      * {@inheritDoc}
      */
-    @Nullable
-    @Override
-    public final Object featuredMethod(String name, Object... args) {
-        return getBaseContext().featuredMethod(name, args);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @NonNull
     @Override
     public final MethodUnhooker<BeforeHooker<Method>, Method> hookBefore(@NonNull Method origin, @NonNull BeforeHooker<Method> hooker) {
