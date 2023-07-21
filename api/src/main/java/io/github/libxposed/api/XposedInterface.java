@@ -1,5 +1,6 @@
 package io.github.libxposed.api;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.res.Resources;
@@ -485,105 +486,116 @@ public interface XposedInterface {
     <T> MethodUnhooker<Hooker<Constructor<T>>, Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Hooker<Constructor<T>> hooker);
 
     /**
-     * Deoptimize boolean.
+     * Deoptimizes a method in case hooked callee is not called because of inline.
      *
-     * @param method the method
-     * @return the boolean
+     * <p>By deoptimizing the method, the method will back all callee without inlining.
+     * For example, when a short hooked method B is invoked by method A, the callback to B is not invoked
+     * after hooking, which may mean A has inlined B inside its method body. To force A to call the hooked B,
+     * you can deoptimize A and then your hook can take effect.</p>
+     *
+     * <p>Generally, you need to find all the callers of your hooked callee and that can be hardly achieve
+     * (but you can still search all callers by using {@link DexParser}). Use this method if you are sure
+     * the deoptimized callers are all you need. Otherwise, it would be better to change the hook point or
+     * to deoptimize the whole app manually (by simply reinstalling the app without uninstall).</p>
+     *
+     * @param method The method to deoptimize
+     * @return Indicate whether the deoptimizing succeed or not
      */
     boolean deoptimize(@NonNull Method method);
 
     /**
-     * Deoptimize boolean.
+     * Deoptimizes a constructor in case hooked callee is not called because of inline.
      *
-     * @param <T>         the type parameter
-     * @param constructor the constructor
-     * @return the boolean
+     * @param <T>         The type of the constructor
+     * @param constructor The constructor to deoptimize
+     * @return Indicate whether the deoptimizing succeed or not
+     * @see #deoptimize(Method)
      */
     <T> boolean deoptimize(@NonNull Constructor<T> constructor);
 
     /**
-     * Invoke origin object.
+     * Basically the same as {@link Method#invoke(Object, Object...)}, but calls the original method
+     * as it was before the interception by Xposed.
      *
-     * @param method     the method
-     * @param thisObject the this object
-     * @param args       the args
-     * @return the object
-     * @throws InvocationTargetException the invocation target exception
-     * @throws IllegalArgumentException  the illegal argument exception
-     * @throws IllegalAccessException    the illegal access exception
+     * @param method     The method to be called
+     * @param thisObject For non-static calls, the {@code this} pointer, otherwise {@code null}
+     * @param args       The arguments used for the method call
+     * @return The result returned from the invoked method
+     * @see Method#invoke(Object, Object...)
      */
     @Nullable
     Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
-     * Invoke special object.
+     * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
+     * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
+     * object. This method is useful when you need to call a specific method on an object, bypassing any
+     * overridden methods in subclasses and directly invoking the method defined in the specified class.
      *
-     * @param method     the method
-     * @param thisObject the this object
-     * @param args       the args
-     * @return the object
-     * @throws InvocationTargetException the invocation target exception
-     * @throws IllegalArgumentException  the illegal argument exception
-     * @throws IllegalAccessException    the illegal access exception
+     * <p>This method is useful when you need to call {@code super.xxx()} in a hooked constructor.</p>
+     *
+     * @param method     The method to be called
+     * @param thisObject For non-static calls, the {@code this} pointer, otherwise {@code null}
+     * @param args       The arguments used for the method call
+     * @return The result returned from the invoked method
+     * @see Method#invoke(Object, Object...)
      */
     @Nullable
     Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
-     * new origin object.
+     * Basically the same as {@link Constructor#newInstance(Object...)}, but calls the original constructor
+     * as it was before the interception by Xposed.
      *
-     * @param <T>         the type parameter
-     * @param constructor the constructor
-     * @param args        the args
-     * @return the object
-     * @throws InvocationTargetException the invocation target exception
-     * @throws IllegalArgumentException  the illegal argument exception
-     * @throws IllegalAccessException    the illegal access exception
-     * @throws InstantiationException    the instantiation exception
+     * @param <T>         The type of the constructor
+     * @param constructor The constructor to create and initialize a new instance
+     * @param args        The arguments used for the construction
+     * @return The instance created and initialized by the constructor
+     * @see Constructor#newInstance(Object...)
      */
     @NonNull
     <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
-
     /**
-     * New instance special u.
+     * Creates a new instance of the given subclass, but initialize it with a parent constructor. This could
+     * leave the object in an invalid state, where the subclass constructor are not called and the fields
+     * of the subclass are not initialized.
      *
-     * @param <T>         the type parameter
-     * @param <U>         the type parameter
-     * @param constructor the constructor
-     * @param subClass    the sub class
-     * @param args        the args
-     * @return the u
-     * @throws InvocationTargetException the invocation target exception
-     * @throws IllegalArgumentException  the illegal argument exception
-     * @throws IllegalAccessException    the illegal access exception
-     * @throws InstantiationException    the instantiation exception
+     * <p>This method is useful when you need to initialize some fields in the subclass by yourself.</p>
+     *
+     * @param <T>         The type of the parent constructor
+     * @param <U>         The type of the subclass
+     * @param constructor The parent constructor to initialize a new instance
+     * @param subClass    The subclass to create a new instance
+     * @param args        The arguments used for the construction
+     * @return The instance of subclass initialized by the constructor
+     * @see Constructor#newInstance(Object...)
      */
     @NonNull
     <T, U> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
     /**
-     * Log.
+     * Writes a message to the Xposed log.
      *
-     * @param message the message
+     * @param message The log message
      */
     void log(@NonNull String message);
 
     /**
-     * Log.
+     * Writes a message with a stack trace to the Xposed log.
      *
-     * @param message   the message
-     * @param throwable the throwable
+     * @param message   The log message
+     * @param throwable The Throwable object for the stack trace
      */
     void log(@NonNull String message, @NonNull Throwable throwable);
 
     /**
-     * Parse dex dex parser.
+     * Parse a dex file in memory.
      *
-     * @param dexData            the dex data
-     * @param includeAnnotations the include annotations
-     * @return the dex parser
-     * @throws IOException the io exception
+     * @param dexData            The content of the dex file
+     * @param includeAnnotations Whether to include annotations
+     * @return The {@link DexParser} of the dex file
+     * @throws IOException if the dex file is invalid
      */
     @Nullable
     DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException;
@@ -592,48 +604,38 @@ public interface XposedInterface {
     // Methods the same with Context
 
     /**
-     * Gets shared preferences.
+     * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.
      *
-     * @param name the name
-     * @param mode the mode
-     * @return the shared preferences
+     * @see Context#getSharedPreferences(String, int)
      */
     SharedPreferences getSharedPreferences(String name, int mode);
 
     /**
-     * Open file input file input stream.
+     * Open a remote file stored in Xposed framework.
      *
-     * @param name the name
-     * @return the file input stream
-     * @throws FileNotFoundException the file not found exception
+     * @see Context#openFileInput(String)
      */
     FileInputStream openFileInput(String name) throws FileNotFoundException;
 
     /**
-     * File list string [ ].
+     * List all remote files stored in Xposed framework. Note that you can only access files created by
+     * your own module app with XposedService.
      *
-     * @return the string [ ]
+     * @see Context#fileList()
      */
     String[] fileList();
 
     /**
-     * Gets resources.
+     * Gets resources of the module.
      *
-     * @return the resources
+     * @see Context#getResources()
      */
     Resources getResources();
 
     /**
-     * Gets class loader.
+     * Gets the application info of the module.
      *
-     * @return the class loader
-     */
-    ClassLoader getClassLoader();
-
-    /**
-     * Gets application info.
-     *
-     * @return the application info
+     * @see Context#getApplicationInfo()
      */
     ApplicationInfo getApplicationInfo();
 }
