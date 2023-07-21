@@ -16,14 +16,14 @@ public interface XposedModuleInterface {
      */
     interface ModuleLoadedParam {
         /**
-         * Get information about whether the module is running in system server.
+         * Gets information about whether the module is running in system server.
          *
          * @return {@code true} if the module is running in system server
          */
         boolean isSystemServer();
 
         /**
-         * Get the process name.
+         * Gets the process name.
          *
          * @return The process name
          */
@@ -36,7 +36,7 @@ public interface XposedModuleInterface {
      */
     interface SystemServerLoadedParam {
         /**
-         * Get the class loader of system server.
+         * Gets the class loader of system server.
          *
          * @return The class loader
          */
@@ -49,7 +49,7 @@ public interface XposedModuleInterface {
      */
     interface PackageLoadedParam {
         /**
-         * Get the package name of the package being loaded.
+         * Gets the package name of the package being loaded.
          *
          * @return The package name.
          */
@@ -57,7 +57,7 @@ public interface XposedModuleInterface {
         String getPackageName();
 
         /**
-         * Get the ApplicationInfo of the package being loaded.
+         * Gets the ApplicationInfo of the package being loaded.
          *
          * @return The ApplicationInfo.
          */
@@ -74,7 +74,7 @@ public interface XposedModuleInterface {
         ClassLoader getDefaultClassLoader();
 
         /**
-         * Get the class loader of the package being loaded.
+         * Gets the class loader of the package being loaded.
          *
          * @return The class loader.
          */
@@ -82,7 +82,7 @@ public interface XposedModuleInterface {
         ClassLoader getClassLoader();
 
         /**
-         * Get information about whether is this package the first and main package of the app process.
+         * Gets information about whether is this package the first and main package of the app process.
          *
          * @return {@code true} if this is the first package.
          */
@@ -90,7 +90,7 @@ public interface XposedModuleInterface {
     }
 
     /**
-     * Get notified when a package is loaded into the app process.<br/>
+     * Gets notified when a package is loaded into the app process.<br/>
      * This callback could be invoked multiple times for the same process on each package.
      *
      * @param param Information about the package being loaded
@@ -98,7 +98,7 @@ public interface XposedModuleInterface {
     void onPackageLoaded(@NonNull PackageLoadedParam param);
 
     /**
-     * Get notified when the system server is loaded.
+     * Gets notified when the system server is loaded.
      *
      * @param param Information about system server
      */

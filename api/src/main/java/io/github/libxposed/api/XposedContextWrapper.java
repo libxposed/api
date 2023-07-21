@@ -31,7 +31,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
     }
 
     /**
-     * Get the Xposed API version of current implementation.
+     * Gets the Xposed API version of current implementation.
      *
      * @return API version
      */
@@ -40,7 +40,7 @@ public class XposedContextWrapper extends ContextWrapper implements XposedInterf
     }
 
     /**
-     * {@inheritDoc}
+     * Gets the implementation {@link XposedContext}. Should not be used by modules.
      */
     @NonNull
     @Override
