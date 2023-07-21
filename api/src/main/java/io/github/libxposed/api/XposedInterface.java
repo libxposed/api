@@ -300,7 +300,7 @@ public interface XposedInterface {
     }
 
     /**
-     * Get the Xposed framework name of current implementation.
+     * Gets the Xposed framework name of current implementation.
      *
      * @return Framework name
      */
@@ -308,7 +308,7 @@ public interface XposedInterface {
     String getFrameworkName();
 
     /**
-     * Get the Xposed framework version of current implementation.
+     * Gets the Xposed framework version of current implementation.
      *
      * @return Framework version
      */
@@ -316,14 +316,14 @@ public interface XposedInterface {
     String getFrameworkVersion();
 
     /**
-     * Get the Xposed framework version code of current implementation.
+     * Gets the Xposed framework version code of current implementation.
      *
      * @return Framework version code
      */
     long getFrameworkVersionCode();
 
     /**
-     * Get the Xposed framework privilege of current implementation.
+     * Gets the Xposed framework privilege of current implementation.
      *
      * @return Framework privilege
      */
