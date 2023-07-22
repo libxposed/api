@@ -95,12 +95,14 @@ public interface XposedModuleInterface {
      *
      * @param param Information about the package being loaded
      */
-    void onPackageLoaded(@NonNull PackageLoadedParam param);
+    default void onPackageLoaded(@NonNull PackageLoadedParam param) {
+    }
 
     /**
      * Gets notified when the system server is loaded.
      *
      * @param param Information about system server
      */
-    void onSystemServerLoaded(@NonNull SystemServerLoadedParam param);
+    default void onSystemServerLoaded(@NonNull SystemServerLoadedParam param) {
+    }
 }
