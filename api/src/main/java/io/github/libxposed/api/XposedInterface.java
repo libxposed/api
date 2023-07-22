@@ -79,9 +79,9 @@ public interface XposedInterface {
      * The before invocation method should have the following signature:<br/>
      * params: {@code member} - The {@link Member} object representing the method or constructor being hooked<br/>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     *         {@code thisObject} - The {@code this} pointer, or null if the method is static<br/>
+     * {@code thisObject} - The {@code this} pointer, or null if the method is static<br/>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     *         {@code args} - The arguments used for the method call<br/>
+     * {@code args} - The arguments used for the method call<br/>
      * returns: An {@link Hooker} object, used to save contextual information for current invocation routine
      * </p>
      *
@@ -89,7 +89,7 @@ public interface XposedInterface {
      * The after invocation method should have the following signature:<br/>
      * params: {@code extras} - The {@link Hooker} object returned by the before invocation method<br/>
      * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     *         {@code result} - The result of the invocation
+     * {@code result} - The result of the invocation
      * </p>
      *
      * <p>Example usage:</p>
@@ -164,52 +164,56 @@ public interface XposedInterface {
     int getFrameworkPrivilege();
 
     /**
-     * Hook method unhooker.
+     * Hook a method with default priority.
      *
-     * @param origin the origin
-     * @param hooker the hooker
-     * @return the method unhooker
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @param origin The method to be hooked
+     * @param hooker The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
+     *                                  or hooker is invalid
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Hook method unhooker.
+     * Hook a method with specified priority.
      *
-     * @param origin   the origin
-     * @param priority the priority
-     * @param hooker   the hooker
-     * @return the method unhooker
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @param origin   The method to be hooked
+     * @param priority The hook priority
+     * @param hooker   The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
+     *                                  or hooker is invalid
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     MethodUnhooker<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Hook method unhooker.
+     * Hook a constructor with default priority.
      *
-     * @param <T>    the type parameter
-     * @param origin the origin
-     * @param hooker the hooker
-     * @return the method unhooker
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @param <T>    The type of the constructor
+     * @param origin The constructor to be hooked
+     * @param hooker The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
+     *                                  or hooker is invalid
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
     <T> MethodUnhooker<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Hook method unhooker.
+     * Hook a constructor with specified priority.
      *
-     * @param <T>      the type parameter
-     * @param origin   the origin
-     * @param priority the priority
-     * @param hooker   the hooker
-     * @return the method unhooker
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke}
+     * @param <T>      The type of the constructor
+     * @param origin   The constructor to be hooked
+     * @param priority The hook priority
+     * @param hooker   The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
+     *                                  or hooker is invalid
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
