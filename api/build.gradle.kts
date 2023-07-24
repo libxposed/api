@@ -1,7 +1,7 @@
 plugins {
-    id("com.android.library")
-    id("maven-publish")
-    id("signing")
+    alias(libs.plugins.agp.lib)
+    `maven-publish`
+    signing
 }
 
 android {
@@ -93,4 +93,5 @@ signing {
 
 dependencies {
     compileOnly("androidx.annotation:annotation:1.6.0")
+    lintPublish(project(":checks"))
 }

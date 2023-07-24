@@ -4,9 +4,6 @@ pluginManagement {
         google()
         mavenCentral()
     }
-    plugins {
-        id("com.android.library") version "8.0.2"
-    }
 }
 
 dependencyResolutionManagement {
@@ -19,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "libxposed-api"
 
-include(":api")
+include(":api", ":checks")

@@ -1,0 +1,14 @@
+[versions]
+kotlin = "1.8.20"
+lint = "31.0.2"
+agp = "8.0.2"
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+agp-lib = { id = "com.android.library", version.ref = "agp" }
+
+[libraries]
+lint-api = { module = "com.android.tools.lint:lint-api", version.ref = "lint" }
+lint-checks = { module = "com.android.tools.lint:lint-checks", version.ref = "lint" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+
