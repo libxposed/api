@@ -123,6 +123,7 @@ public class XposedInterfaceWrapper implements XposedInterface {
         return mBase.parseDex(dexData, includeAnnotations);
     }
 
+    @NonNull
     @Override
     public SharedPreferences getRemotePreferences(@NonNull String name) {
         return mBase.getRemotePreferences(name);

@@ -451,10 +451,10 @@ public interface XposedInterface {
      * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.
      *
      * @param group Group name
-     * @return The preferences, null if the group does not exists
+     * @return The preferences
      * @throws UnsupportedOperationException If the framework is embedded
      */
-    @Nullable
+    @NonNull
     SharedPreferences getRemotePreferences(@NonNull String group);
 
     /**
@@ -471,7 +471,7 @@ public interface XposedInterface {
      *
      * @param name File name, must not contain path separators and . or ..
      * @return The file descriptor
-     * @throws FileNotFoundException If the file does not exist or the path is forbidden
+     * @throws FileNotFoundException         If the file does not exist or the path is forbidden
      * @throws UnsupportedOperationException If the framework is embedded
      */
     @NonNull
