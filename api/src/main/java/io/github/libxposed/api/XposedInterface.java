@@ -2,11 +2,11 @@ package io.github.libxposed.api;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -467,13 +467,13 @@ public interface XposedInterface {
     String[] listRemoteFiles();
 
     /**
-     * Open an InputStream to read a file from the module's shared data directory.
+     * Open a file in the module's shared data directory. The file is opened in read-only mode.
      *
      * @param name File name, must not contain path separators and . or ..
-     * @return The InputStream
+     * @return The file descriptor
      * @throws FileNotFoundException If the file does not exist or the path is forbidden
      * @throws UnsupportedOperationException If the framework is embedded
      */
     @NonNull
-    FileInputStream openRemoteFileInput(@NonNull String name) throws FileNotFoundException;
+    ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException;
 }

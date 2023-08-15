@@ -2,11 +2,11 @@ package io.github.libxposed.api;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -142,7 +142,7 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public FileInputStream openRemoteFileInput(@NonNull String name) throws FileNotFoundException {
-        return mBase.openRemoteFileInput(name);
+    public ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException {
+        return mBase.openRemoteFile(name);
     }
 }
