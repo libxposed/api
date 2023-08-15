@@ -100,16 +100,6 @@ public interface XposedInterface {
          * @param throwable The exception to be thrown
          */
         void throwAndSkip(@Nullable Throwable throwable);
-
-        /**
-         * Sets an extra object to the hook context in order to share additional contextual information
-         * between the before and after invocation callbacks of the same procedure call.
-         *
-         * @param <T>   The type of the extra object
-         * @param key   The name of the extra object
-         * @param value The extra object
-         */
-        <T> void setExtra(@NonNull String key, @Nullable T value);
     }
 
     /**
@@ -167,16 +157,6 @@ public interface XposedInterface {
          * @param throwable The exception to be thrown.
          */
         void setThrowable(@Nullable Throwable throwable);
-
-        /**
-         * Gets an extra object saved by the before invocation callback of the same procedure call.
-         *
-         * @param <T> The type of the extra object
-         * @param key The name of the extra object
-         * @return The extra object, or {@code null} if not found
-         */
-        @Nullable
-        <T> T getExtra(@NonNull String key);
     }
 
     /**
@@ -193,19 +173,22 @@ public interface XposedInterface {
      *
      * <p>
      * The before invocation method should have the following signature:<br/>
-     * params: {@code callback} - The {@link BeforeHookCallback} of the procedure call<br/>
+     * Param {@code callback}: The {@link BeforeHookCallback} of the procedure call.<br/>
+     * Return value: If you want to save contextual information of one procedure call between the before
+     * and after callback, it could be a self-defined class, otherwise it should be {@code void}.
      * </p>
      *
      * <p>
      * The after invocation method should have the following signature:<br/>
-     * params: {@code callback} - The {@link AfterHookCallback} of the procedure call<br/>
+     * Param {@code callback}: The {@link AfterHookCallback} of the procedure call.<br/>
+     * Param {@code context} (optional): The contextual object returned by the before invocation.
      * </p>
      *
      * <p>Example usage:</p>
      *
      * <pre>{@code
      *   @XposedHooker
-     *   public class ExampleHooker implements XposedInterface.Hooker {
+     *   public class ExampleHooker implements Hooker {
      *
      *       @BeforeInvocation
      *       public static void before(@NonNull BeforeHookCallback callback) {
@@ -214,6 +197,21 @@ public interface XposedInterface {
      *
      *       @AfterInvocation
      *       public static void after(@NonNull AfterHookCallback callback) {
+     *           // Post-hooking logic goes here
+     *       }
+     *   }
+     *
+     *   @XposedHooker
+     *   public class ExampleHookerWithContext implements Hooker {
+     *
+     *       @BeforeInvocation
+     *       public static MyContext before(@NonNull BeforeHookCallback callback) {
+     *           // Pre-hooking logic goes here
+     *           return new MyContext();
+     *       }
+     *
+     *       @AfterInvocation
+     *       public static void after(@NonNull AfterHookCallback callback, MyContext context) {
      *           // Post-hooking logic goes here
      *       }
      *   }
