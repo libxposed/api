@@ -47,7 +47,7 @@ public interface XposedInterface {
     int FRAMEWORK_PRIVILEGE_APP = 2;
     /**
      * Indicates that the framework is embedded in the hooked app,
-     * which means {@link #getSharedPreferences} will be null and remote file is unsupported.
+     * which means {@link #getRemotePreferences} will be null and remote file is unsupported.
      */
     int FRAMEWORK_PRIVILEGE_EMBEDDED = 3;
 
@@ -443,42 +443,49 @@ public interface XposedInterface {
     @Nullable
     DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException;
 
-
-    // Methods the same with Context
-
     /**
-     * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.
+     * Gets the application info of the module.
      *
-     * @see Context#getSharedPreferences(String, int)
+     * @see Context#getApplicationInfo()
      */
-    SharedPreferences getSharedPreferences(String name, int mode);
-
-    /**
-     * Open a remote file stored in Xposed framework.
-     *
-     * @see Context#openFileInput(String)
-     */
-    FileInputStream openFileInput(String name) throws FileNotFoundException;
-
-    /**
-     * List all remote files stored in Xposed framework. Note that you can only access files created by
-     * your own module app with XposedService.
-     *
-     * @see Context#fileList()
-     */
-    String[] fileList();
+    @NonNull
+    ApplicationInfo getApplicationInfo();
 
     /**
      * Gets resources of the module.
      *
      * @see Context#getResources()
      */
+    @NonNull
     Resources getResources();
 
     /**
-     * Gets the application info of the module.
+     * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.
      *
-     * @see Context#getApplicationInfo()
+     * @param group Group name
+     * @return The preferences, null if the group does not exists
+     * @throws UnsupportedOperationException If the framework is embedded
      */
-    ApplicationInfo getApplicationInfo();
+    @Nullable
+    SharedPreferences getRemotePreferences(@NonNull String group);
+
+    /**
+     * Open an InputStream to read a file from the module's shared data directory.
+     *
+     * @param name File name, must not contain path separators and . or ..
+     * @return The InputStream
+     * @throws FileNotFoundException If the file does not exist or the path is forbidden
+     * @throws UnsupportedOperationException If the framework is embedded
+     */
+    @NonNull
+    FileInputStream openRemoteFileInput(@NonNull String name) throws FileNotFoundException;
+
+    /**
+     * List all files in the module's shared data directory.
+     *
+     * @return The file list
+     * @throws UnsupportedOperationException If the framework is embedded
+     */
+    @NonNull
+    String[] listRemoteFiles();
 }
