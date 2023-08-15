@@ -2,7 +2,6 @@ package io.github.libxposed.api;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -137,19 +136,13 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public Resources getResources() {
-        return mBase.getResources();
+    public String[] listRemoteFiles() {
+        return mBase.listRemoteFiles();
     }
 
     @NonNull
     @Override
     public FileInputStream openRemoteFileInput(@NonNull String name) throws FileNotFoundException {
         return mBase.openRemoteFileInput(name);
-    }
-
-    @NonNull
-    @Override
-    public String[] listRemoteFiles() {
-        return mBase.listRemoteFiles();
     }
 }

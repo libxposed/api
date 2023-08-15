@@ -1,9 +1,7 @@
 package io.github.libxposed.api;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.res.Resources;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -445,19 +443,9 @@ public interface XposedInterface {
 
     /**
      * Gets the application info of the module.
-     *
-     * @see Context#getApplicationInfo()
      */
     @NonNull
     ApplicationInfo getApplicationInfo();
-
-    /**
-     * Gets resources of the module.
-     *
-     * @see Context#getResources()
-     */
-    @NonNull
-    Resources getResources();
 
     /**
      * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.
@@ -470,6 +458,15 @@ public interface XposedInterface {
     SharedPreferences getRemotePreferences(@NonNull String group);
 
     /**
+     * List all files in the module's shared data directory.
+     *
+     * @return The file list
+     * @throws UnsupportedOperationException If the framework is embedded
+     */
+    @NonNull
+    String[] listRemoteFiles();
+
+    /**
      * Open an InputStream to read a file from the module's shared data directory.
      *
      * @param name File name, must not contain path separators and . or ..
@@ -479,13 +476,4 @@ public interface XposedInterface {
      */
     @NonNull
     FileInputStream openRemoteFileInput(@NonNull String name) throws FileNotFoundException;
-
-    /**
-     * List all files in the module's shared data directory.
-     *
-     * @return The file list
-     * @throws UnsupportedOperationException If the framework is embedded
-     */
-    @NonNull
-    String[] listRemoteFiles();
 }

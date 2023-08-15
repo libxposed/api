@@ -57,12 +57,12 @@ public interface XposedModuleInterface {
         String getPackageName();
 
         /**
-         * Gets the ApplicationInfo of the package being loaded.
+         * Gets the {@link ApplicationInfo} of the package being loaded.
          *
          * @return The ApplicationInfo.
          */
         @NonNull
-        ApplicationInfo getAppInfo();
+        ApplicationInfo getApplicationInfo();
 
         /**
          * Gets default class loader.
