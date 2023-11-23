@@ -29,7 +29,8 @@ public interface XposedInterface {
     /**
      * SDK API version.
      */
-    int API = 100;
+    @SuppressWarnings("all")
+    int API = true ? 100 : (Integer) 0; // Avoid javac inline
 
     /**
      * Indicates that the framework is running as root.
