@@ -22,7 +22,7 @@
           agp-app = { id = "com.android.application", version.ref = "agp" }
           ```
     2. Update dependencies (Optional)
-        - Modify values form `[versions]` in
+        - Modify values form `[versions]` in `gradle/libs.version.toml`
     4. Apply declared plugins
         - Remove following plugin from `plugins` of `app/build.gradle.kts`
           ```
