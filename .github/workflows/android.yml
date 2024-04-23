@@ -3,7 +3,6 @@ name: Android CI
 on:
   push:
     branches: [ "master" ]
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -53,7 +52,6 @@ jobs:
         # Upload entire repository
         path: 'api/build/intermediates/java_doc_dir/release'
     - name: Deploy to GitHub Pages
-      if: ${{ ( github.event_name != 'pull_request' && github.ref == 'refs/heads/master' ) || github.ref_type == 'tag' }}
       id: deployment
       uses: actions/deploy-pages@v4
 
