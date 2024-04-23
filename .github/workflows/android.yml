@@ -55,5 +55,5 @@ jobs:
     - name: Deploy to GitHub Pages
       if: ${{ ( github.event_name != 'pull_request' && github.ref == 'refs/heads/master' ) || github.ref_type == 'tag' }}
       id: deployment
-      uses: actions/deploy-pages@4
+      uses: actions/deploy-pages@v4
 
