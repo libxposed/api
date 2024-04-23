@@ -3,6 +3,7 @@ name: Android CI
 on:
   push:
     branches: [ "master" ]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -47,11 +48,12 @@ jobs:
         name: library
         path: ~/.m2
     - name: Upload pages
-      uses: actions/upload-pages-artifact@v1
+      uses: actions/upload-pages-artifact@v3
       with:
         # Upload entire repository
         path: 'api/build/intermediates/java_doc_dir/release'
     - name: Deploy to GitHub Pages
+      if: ${{ ( github.event_name != 'pull_request' && github.ref == 'refs/heads/master' ) || github.ref_type == 'tag' }}
       id: deployment
-      uses: actions/deploy-pages@main
+      uses: actions/deploy-pages@4
 
