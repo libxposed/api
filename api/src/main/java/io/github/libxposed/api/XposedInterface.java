@@ -366,6 +366,17 @@ public interface XposedInterface {
     Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
+     * Basically the same as {@link Constructor#newInstance(Object...)}, but calls the original constructor
+     * as it was before the interception by Xposed.
+     * @param constructor The constructor to create and initialize a new instance
+     * @param thisObject  The instance to be constructed
+     * @param args        The arguments used for the construction
+     * @param <T>         The type of the instance
+     * @see Constructor#newInstance(Object...)
+     */
+    <T> void invokeOrigin(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+
+    /**
      * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
      * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
      * object. This method is useful when you need to call a specific method on an object, bypassing any
@@ -381,6 +392,21 @@ public interface XposedInterface {
      */
     @Nullable
     Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+
+    /**
+     * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
+     * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
+     * object. This method is useful when you need to call a specific method on an object, bypassing any
+     * overridden methods in subclasses and directly invoking the method defined in the specified class.
+     *
+     * <p>This method is useful when you need to call {@code super.xxx()} in a hooked constructor.</p>
+     *
+     * @param constructor The constructor to create and initialize a new instance
+     * @param thisObject  The instance to be constructed
+     * @param args        The arguments used for the construction
+     * @see Constructor#newInstance(Object...)
+     */
+    <T> void invokeSpecial(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
      * Basically the same as {@link Constructor#newInstance(Object...)}, but calls the original constructor

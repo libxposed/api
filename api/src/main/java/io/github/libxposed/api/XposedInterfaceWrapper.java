@@ -89,10 +89,20 @@ public class XposedInterfaceWrapper implements XposedInterface {
         return mBase.invokeOrigin(method, thisObject, args);
     }
 
+    @Override
+    public <T> void invokeOrigin(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
+        mBase.invokeOrigin(constructor, thisObject, args);
+    }
+
     @Nullable
     @Override
     public final Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
         return mBase.invokeSpecial(method, thisObject, args);
+    }
+
+    @Override
+    public <T> void invokeSpecial(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
+        mBase.invokeSpecial(constructor, thisObject, args);
     }
 
     @NonNull
