@@ -15,9 +15,6 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
-import io.github.libxposed.api.annotations.AfterInvocation;
-import io.github.libxposed.api.annotations.BeforeInvocation;
-import io.github.libxposed.api.annotations.XposedHooker;
 import io.github.libxposed.api.errors.HookFailedError;
 import io.github.libxposed.api.utils.DexParser;
 
@@ -166,9 +163,8 @@ public interface XposedInterface {
      * like the old API.
      *
      * <p>
-     * Classes implementing this interface should be annotated with {@link XposedHooker} and should provide
-     * two public static methods that are annotated with {@link BeforeInvocation} and {@link AfterInvocation},
-     * respectively.
+     * Classes implementing this interface should should provide two public static methods named
+     * before and after for before invocation and after invocation respectively.
      * </p>
      *
      * <p>
@@ -187,30 +183,24 @@ public interface XposedInterface {
      * <p>Example usage:</p>
      *
      * <pre>{@code
-     *   @XposedHooker
      *   public class ExampleHooker implements Hooker {
      *
-     *       @BeforeInvocation
      *       public static void before(@NonNull BeforeHookCallback callback) {
      *           // Pre-hooking logic goes here
      *       }
      *
-     *       @AfterInvocation
      *       public static void after(@NonNull AfterHookCallback callback) {
      *           // Post-hooking logic goes here
      *       }
      *   }
      *
-     *   @XposedHooker
      *   public class ExampleHookerWithContext implements Hooker {
      *
-     *       @BeforeInvocation
      *       public static MyContext before(@NonNull BeforeHookCallback callback) {
      *           // Pre-hooking logic goes here
      *           return new MyContext();
      *       }
      *
-     *       @AfterInvocation
      *       public static void after(@NonNull AfterHookCallback callback, MyContext context) {
      *           // Post-hooking logic goes here
      *       }
