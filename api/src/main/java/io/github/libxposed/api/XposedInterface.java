@@ -272,6 +272,37 @@ public interface XposedInterface {
     MethodUnhooker<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
+     * Hook the static initializer of a class with default priority.
+     * <p>
+     * Note: If the class is initialized, the hook will never be called.
+     * </p>
+     *
+     * @param origin The class to be hooked
+     * @param hooker The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
+     * @throws HookFailedError          if hook fails due to framework internal error
+     */
+    @NonNull
+    <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker);
+
+    /**
+     * Hook the static initializer of a class with specified priority.
+     * <p>
+     * Note: If the class is initialized, the hook will never be called.
+     * </p>
+     *
+     * @param origin   The class to be hooked
+     * @param priority The hook priority
+     * @param hooker   The hooker class
+     * @return Unhooker for canceling the hook
+     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
+     * @throws HookFailedError          if hook fails due to framework internal error
+     */
+    @NonNull
+    <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
+
+    /**
      * Hook a method with specified priority.
      *
      * @param origin   The method to be hooked
@@ -358,6 +389,7 @@ public interface XposedInterface {
     /**
      * Basically the same as {@link Constructor#newInstance(Object...)}, but calls the original constructor
      * as it was before the interception by Xposed.
+     *
      * @param constructor The constructor to create and initialize a new instance
      * @param thisObject  The instance to be constructed
      * @param args        The arguments used for the construction
