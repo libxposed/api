@@ -51,37 +51,37 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public final MethodUnhooker<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker) {
+    public final HookHandle<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, hooker);
     }
 
     @NonNull
     @Override
-    public <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker) {
+    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hookClassInitializer(origin, hooker);
     }
 
     @NonNull
     @Override
-    public <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
+    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hookClassInitializer(origin, priority, hooker);
     }
 
     @NonNull
     @Override
-    public final MethodUnhooker<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker) {
+    public final HookHandle<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, priority, hooker);
     }
 
     @NonNull
     @Override
-    public final <T> MethodUnhooker<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker) {
+    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, hooker);
     }
 
     @NonNull
     @Override
-    public final <T> MethodUnhooker<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
+    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, priority, hooker);
     }
 
