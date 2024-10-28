@@ -57,18 +57,6 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hookClassInitializer(origin, hooker);
-    }
-
-    @NonNull
-    @Override
-    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hookClassInitializer(origin, priority, hooker);
-    }
-
-    @NonNull
-    @Override
     public final HookHandle<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, priority, hooker);
     }
@@ -83,6 +71,18 @@ public class XposedInterfaceWrapper implements XposedInterface {
     @Override
     public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, priority, hooker);
+    }
+
+    @NonNull
+    @Override
+    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker) {
+        return mBase.hookClassInitializer(origin, hooker);
+    }
+
+    @NonNull
+    @Override
+    public <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
+        return mBase.hookClassInitializer(origin, priority, hooker);
     }
 
     @Override
@@ -106,6 +106,12 @@ public class XposedInterfaceWrapper implements XposedInterface {
         mBase.invokeOrigin(constructor, thisObject, args);
     }
 
+    @NonNull
+    @Override
+    public final <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
+        return mBase.newInstanceOrigin(constructor, args);
+    }
+
     @Nullable
     @Override
     public final Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
@@ -115,12 +121,6 @@ public class XposedInterfaceWrapper implements XposedInterface {
     @Override
     public <T> void invokeSpecial(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
         mBase.invokeSpecial(constructor, thisObject, args);
-    }
-
-    @NonNull
-    @Override
-    public final <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
-        return mBase.newInstanceOrigin(constructor, args);
     }
 
     @NonNull

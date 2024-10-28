@@ -284,37 +284,6 @@ public interface XposedInterface {
     HookHandle<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Hook the static initializer of a class with default priority.
-     * <p>
-     * Note: If the class is initialized, the hook will never be called.
-     * </p>
-     *
-     * @param origin The class to be hooked
-     * @param hooker The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker);
-
-    /**
-     * Hook the static initializer of a class with specified priority.
-     * <p>
-     * Note: If the class is initialized, the hook will never be called.
-     * </p>
-     *
-     * @param origin   The class to be hooked
-     * @param priority The hook priority
-     * @param hooker   The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
-
-    /**
      * Hook a method with specified priority.
      *
      * @param origin   The method to be hooked
@@ -356,6 +325,37 @@ public interface XposedInterface {
      */
     @NonNull
     <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
+
+    /**
+     * Hook the static initializer of a class with default priority.
+     * <p>
+     * Note: If the class is initialized, the hook will never be called.
+     * </p>
+     *
+     * @param origin The class to be hooked
+     * @param hooker The hooker class
+     * @return Handle for the hook
+     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
+     * @throws HookFailedError          if hook fails due to framework internal error
+     */
+    @NonNull
+    <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker);
+
+    /**
+     * Hook the static initializer of a class with specified priority.
+     * <p>
+     * Note: If the class is initialized, the hook will never be called.
+     * </p>
+     *
+     * @param origin   The class to be hooked
+     * @param priority The hook priority
+     * @param hooker   The hooker class
+     * @return Handle for the hook
+     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
+     * @throws HookFailedError          if hook fails due to framework internal error
+     */
+    @NonNull
+    <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
 
     /**
      * Deoptimizes a method in case hooked callee is not called because of inline.
@@ -409,6 +409,18 @@ public interface XposedInterface {
     <T> void invokeOrigin(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
+     * Basically the same as {@link Constructor#newInstance(Object...)}, but skips all Xposed hooks.
+     *
+     * @param <T>         The type of the constructor
+     * @param constructor The constructor to create and initialize a new instance
+     * @param args        The arguments used for the construction
+     * @return The instance created and initialized by the constructor
+     * @see Constructor#newInstance(Object...)
+     */
+    @NonNull
+    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
+
+    /**
      * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
      * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
      * object. This method is useful when you need to call a specific method on an object, bypassing any
@@ -439,18 +451,6 @@ public interface XposedInterface {
      * @see Constructor#newInstance(Object...)
      */
     <T> void invokeSpecial(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
-
-    /**
-     * Basically the same as {@link Constructor#newInstance(Object...)}, but skips all Xposed hooks.
-     *
-     * @param <T>         The type of the constructor
-     * @param constructor The constructor to create and initialize a new instance
-     * @param args        The arguments used for the construction
-     * @return The instance created and initialized by the constructor
-     * @see Constructor#newInstance(Object...)
-     */
-    @NonNull
-    <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
 
     /**
      * Creates a new instance of the given subclass, but initialize it with a parent constructor. This could
