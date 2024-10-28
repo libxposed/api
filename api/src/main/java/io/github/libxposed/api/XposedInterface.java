@@ -64,7 +64,7 @@ public interface XposedInterface {
      */
     interface BeforeHookCallback {
         /**
-         * Gets the method / constructor to be hooked.
+         * Gets the method / constructor being hooked.
          */
         @NonNull
         Member getMember();
@@ -104,7 +104,7 @@ public interface XposedInterface {
      */
     interface AfterHookCallback {
         /**
-         * Gets the method / constructor to be hooked.
+         * Gets the method / constructor being hooked.
          */
         @NonNull
         Member getMember();
@@ -217,22 +217,22 @@ public interface XposedInterface {
      */
     interface HookHandle<T> {
         /**
-         * Gets the method or constructor being hooked.
+         * Gets the method / constructor being hooked.
          */
         @NonNull
-        T getOrigin();
+        T getMember();
 
         /**
          * Similar to {@link Method#invoke(Object, Object...)}, but skips Xposed hooks with lower priority.
          *
-         * @param method     The method or constructor to be called
+         * @param member     The method / constructor to be called
          * @param thisObject For non-static calls, the {@code this} pointer, otherwise {@code null}
          * @param args       The arguments used for the method call
          * @return The result returned from the invoked method
          * @see Method#invoke(Object, Object...)
          */
         @Nullable
-        Object invoke(@NonNull T method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+        Object invoke(@NonNull T member, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
         /**
          * Cancels the hook. The behavior of calling this method multiple times is undefined.
