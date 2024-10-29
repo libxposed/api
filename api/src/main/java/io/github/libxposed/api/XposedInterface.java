@@ -10,8 +10,8 @@ import androidx.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 
@@ -62,12 +62,12 @@ public interface XposedInterface {
     /**
      * Contextual interface for before invocation callbacks.
      */
-    interface BeforeHookCallback {
+    interface BeforeHookCallback<T extends Executable> {
         /**
          * Gets the method / constructor being hooked.
          */
         @NonNull
-        Member getMember();
+        T getExecutable();
 
         /**
          * Gets the {@code this} object, or {@code null} if the method is static.
@@ -102,12 +102,12 @@ public interface XposedInterface {
     /**
      * Contextual interface for after invocation callbacks.
      */
-    interface AfterHookCallback {
+    interface AfterHookCallback<T extends Executable> {
         /**
          * Gets the method / constructor being hooked.
          */
         @NonNull
-        Member getMember();
+        T getExecutable();
 
         /**
          * Gets the {@code this} object, or {@code null} if the method is static.
@@ -215,24 +215,12 @@ public interface XposedInterface {
      *
      * @param <T> {@link Method} or {@link Constructor}
      */
-    interface HookHandle<T> {
+    interface HookHandle<T extends Executable> {
         /**
          * Gets the method / constructor being hooked.
          */
         @NonNull
-        T getMember();
-
-        /**
-         * Similar to {@link Method#invoke(Object, Object...)}, but skips Xposed hooks with lower priority.
-         *
-         * @param member     The method / constructor to be called
-         * @param thisObject For non-static calls, the {@code this} pointer, otherwise {@code null}
-         * @param args       The arguments used for the method call
-         * @return The result returned from the invoked method
-         * @see Method#invoke(Object, Object...)
-         */
-        @Nullable
-        Object invoke(@NonNull T member, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+        T getExecutable();
 
         /**
          * Cancels the hook. The behavior of calling this method multiple times is undefined.
@@ -271,9 +259,9 @@ public interface XposedInterface {
     int getFrameworkPrivilege();
 
     /**
-     * Hook a method with default priority.
+     * Hook a method / constructor with default priority.
      *
-     * @param origin The method to be hooked
+     * @param origin The method / constructor to be hooked
      * @param hooker The hooker class
      * @return Handle for the hook
      * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
@@ -281,12 +269,12 @@ public interface XposedInterface {
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
-    HookHandle<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker);
+    <T extends Executable> HookHandle<T> hook(@NonNull T origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Hook a method with specified priority.
+     * Hook a method / constructor with specified priority.
      *
-     * @param origin   The method to be hooked
+     * @param origin   The method / constructor to be hooked
      * @param priority The hook priority
      * @param hooker   The hooker class
      * @return Handle for the hook
@@ -295,36 +283,7 @@ public interface XposedInterface {
      * @throws HookFailedError          if hook fails due to framework internal error
      */
     @NonNull
-    HookHandle<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker);
-
-    /**
-     * Hook a constructor with default priority.
-     *
-     * @param <T>    The type of the constructor
-     * @param origin The constructor to be hooked
-     * @param hooker The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
-     *                                  or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker);
-
-    /**
-     * Hook a constructor with specified priority.
-     *
-     * @param <T>      The type of the constructor
-     * @param origin   The constructor to be hooked
-     * @param priority The hook priority
-     * @param hooker   The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
-     *                                  or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
+    <T extends Executable> HookHandle<T> hook(@NonNull T origin, int priority, @NonNull Class<? extends Hooker> hooker);
 
     /**
      * Hook the static initializer of a class with default priority.
@@ -358,7 +317,7 @@ public interface XposedInterface {
     <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker);
 
     /**
-     * Deoptimizes a method in case hooked callee is not called because of inline.
+     * Deoptimizes a method / constructor in case hooked callee is not called because of inline.
      *
      * <p>By deoptimizing the method, the method will back all callee without inlining.
      * For example, when a short hooked method B is invoked by method A, the callback to B is not invoked
@@ -370,20 +329,10 @@ public interface XposedInterface {
      * the deoptimized callers are all you need. Otherwise, it would be better to change the hook point or
      * to deoptimize the whole app manually (by simply reinstalling the app without uninstall).</p>
      *
-     * @param method The method to deoptimize
+     * @param executable The method to deoptimize
      * @return Indicate whether the deoptimizing succeed or not
      */
-    boolean deoptimize(@NonNull Method method);
-
-    /**
-     * Deoptimizes a constructor in case hooked callee is not called because of inline.
-     *
-     * @param <T>         The type of the constructor
-     * @param constructor The constructor to deoptimize
-     * @return Indicate whether the deoptimizing succeed or not
-     * @see #deoptimize(Method)
-     */
-    <T> boolean deoptimize(@NonNull Constructor<T> constructor);
+    boolean deoptimize(@NonNull Executable executable);
 
     /**
      * Basically the same as {@link Method#invoke(Object, Object...)}, but skips all Xposed hooks.
@@ -398,7 +347,7 @@ public interface XposedInterface {
     Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
     /**
-     * Basically the same as {@link Constructor#newInstance(Object...)}, but skips all Xposed hooks.
+     * Invoke the constructor as a method, but skips all Xposed hooks.
      *
      * @param constructor The constructor to create and initialize a new instance
      * @param thisObject  The instance to be constructed

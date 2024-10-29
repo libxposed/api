@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
@@ -51,25 +52,13 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public final HookHandle<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker) {
+    public final <T extends Executable> HookHandle<T> hook(@NonNull T origin, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, hooker);
     }
 
     @NonNull
     @Override
-    public final HookHandle<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, priority, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
+    public final <T extends Executable> HookHandle<T> hook(@NonNull T origin, int priority, @NonNull Class<? extends Hooker> hooker) {
         return mBase.hook(origin, priority, hooker);
     }
 
@@ -86,13 +75,8 @@ public class XposedInterfaceWrapper implements XposedInterface {
     }
 
     @Override
-    public final boolean deoptimize(@NonNull Method method) {
-        return mBase.deoptimize(method);
-    }
-
-    @Override
-    public final <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
-        return mBase.deoptimize(constructor);
+    public final boolean deoptimize(@NonNull Executable executable) {
+        return mBase.deoptimize(executable);
     }
 
     @Nullable
