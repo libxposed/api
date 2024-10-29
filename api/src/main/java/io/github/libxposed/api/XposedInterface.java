@@ -185,23 +185,23 @@ public interface XposedInterface {
      * <pre>{@code
      *   public class ExampleHooker implements Hooker {
      *
-     *       public static void before(@NonNull BeforeHookCallback callback) {
+     *       public static void before(@NonNull BeforeHookCallback<Method> callback) {
      *           // Pre-hooking logic goes here
      *       }
      *
-     *       public static void after(@NonNull AfterHookCallback callback) {
+     *       public static void after(@NonNull AfterHookCallback<Method> callback) {
      *           // Post-hooking logic goes here
      *       }
      *   }
      *
      *   public class ExampleHookerWithContext implements Hooker {
      *
-     *       public static MyContext before(@NonNull BeforeHookCallback callback) {
+     *       public static MyContext before(@NonNull BeforeHookCallback<Method> callback) {
      *           // Pre-hooking logic goes here
      *           return new MyContext();
      *       }
      *
-     *       public static void after(@NonNull AfterHookCallback callback, MyContext context) {
+     *       public static void after(@NonNull AfterHookCallback<Method> callback, MyContext context) {
      *           // Post-hooking logic goes here
      *       }
      *   }
