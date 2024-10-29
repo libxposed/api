@@ -259,19 +259,6 @@ public interface XposedInterface {
     int getFrameworkPrivilege();
 
     /**
-     * Hook a method / constructor with default priority.
-     *
-     * @param origin The method / constructor to be hooked
-     * @param hooker The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
-     *                                  or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T extends Executable> HookHandle<T> hook(@NonNull T origin, @NonNull Class<? extends Hooker> hooker);
-
-    /**
      * Hook a method / constructor with specified priority.
      *
      * @param origin   The method / constructor to be hooked
@@ -284,21 +271,6 @@ public interface XposedInterface {
      */
     @NonNull
     <T extends Executable> HookHandle<T> hook(@NonNull T origin, int priority, @NonNull Class<? extends Hooker> hooker);
-
-    /**
-     * Hook the static initializer of a class with default priority.
-     * <p>
-     * Note: If the class is initialized, the hook will never be called.
-     * </p>
-     *
-     * @param origin The class to be hooked
-     * @param hooker The hooker class
-     * @return Handle for the hook
-     * @throws IllegalArgumentException if class has no static initializer or hooker is invalid
-     * @throws HookFailedError          if hook fails due to framework internal error
-     */
-    @NonNull
-    <T> HookHandle<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker);
 
     /**
      * Hook the static initializer of a class with specified priority.
