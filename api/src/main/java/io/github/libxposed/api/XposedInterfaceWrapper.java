@@ -22,9 +22,15 @@ import io.github.libxposed.api.utils.DexParser;
  */
 public class XposedInterfaceWrapper implements XposedInterface {
 
-    private final XposedInterface mBase;
+    private XposedInterface mBase;
 
-    XposedInterfaceWrapper(@NonNull XposedInterface base) {
+    /**
+     * Attaches the framework interface to the module. Modules should never call this method.
+     *
+     * @param base The framework interface
+     */
+    @SuppressWarnings("unused")
+    public final void attachFramework(@NonNull XposedInterface base) {
         mBase = base;
     }
 

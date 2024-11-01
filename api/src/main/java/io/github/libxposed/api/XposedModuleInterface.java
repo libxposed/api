@@ -1,5 +1,6 @@
 package io.github.libxposed.api;
 
+import android.app.AppComponentFactory;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 
@@ -87,6 +88,16 @@ public interface XposedModuleInterface {
          * @return {@code true} if this is the first package.
          */
         boolean isFirstPackage();
+    }
+
+    /**
+     * Gets notified when the module is loaded into the target process.<br/>
+     * This callback is guaranteed to be called exactly once for a process before
+     * {@link AppComponentFactory} is created.
+     *
+     * @param param Information about the process in which the module is loaded
+     */
+    default void onModuleLoaded(@NonNull ModuleLoadedParam param) {
     }
 
     /**
