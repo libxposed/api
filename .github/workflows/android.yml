@@ -45,7 +45,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: library
-        path: ~/.m2
+        path: ~/.m2/repository/
+        include-hidden-files: true
+        if-no-files-found: error
     - name: Upload pages
       uses: actions/upload-pages-artifact@v3
       with:
