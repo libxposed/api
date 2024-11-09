@@ -59,16 +59,11 @@ jobs:
           name: libxposed-api-${{ env.version }}@${{ env.commit }}
           path: ~/.m2/repository/
 
-      - name: Prepare pages
-        run: |
-          mkdir -p docs
-          cp -r api/build/intermediates/java_doc_dir/release/javaDocReleaseGeneration/* docs/
-
       - name: Upload pages
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: 'docs'
+          path: 'api/build/intermediates/java_doc_dir/release/javaDocReleaseGeneration/'
 
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
