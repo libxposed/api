@@ -18,7 +18,7 @@ android {
     buildFeatures {
         buildConfig = false
     }
-    androidResources.enable = false
+
     compileOptions {
         targetCompatibility = JavaVersion.VERSION_1_8
         sourceCompatibility = JavaVersion.VERSION_1_8
