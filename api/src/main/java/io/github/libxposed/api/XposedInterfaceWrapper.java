@@ -130,6 +130,11 @@ public class XposedInterfaceWrapper implements XposedInterface {
     }
 
     @Override
+    public final void log(int priority, @Nullable String tag, @NonNull String msg, @Nullable Throwable tr) {
+        mBase.log(priority, tag, msg, tr);
+    }
+
+    @Override
     public final void log(@NonNull String message) {
         mBase.log(message);
     }

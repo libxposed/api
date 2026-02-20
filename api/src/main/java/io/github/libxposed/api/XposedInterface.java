@@ -464,16 +464,31 @@ public interface XposedInterface {
     /**
      * Writes a message to the Xposed log.
      *
+     * @param priority The log priority, see {@link android.util.Log}
+     * @param tag      The log tag
+     * @param msg      The log message
+     * @param tr       An exception to log
+     */
+    void log(int priority, @Nullable String tag, @NonNull String msg, @Nullable Throwable tr);
+
+    /**
+     * Writes a message to the Xposed log.
+     * @deprecated Use {@link #log(int, String, String, Throwable)} instead.
+     * This method is kept for compatibility with old hooker classes and will be removed in first release version.
+     *
      * @param message The log message
      */
+    @Deprecated
     void log(@NonNull String message);
 
     /**
      * Writes a message with a stack trace to the Xposed log.
+     * @deprecated Use {@link #log(int, String, String, Throwable)} instead.
      *
      * @param message   The log message
      * @param throwable The Throwable object for the stack trace
      */
+    @Deprecated
     void log(@NonNull String message, @NonNull Throwable throwable);
 
     /**

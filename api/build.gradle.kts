@@ -8,6 +8,7 @@ android {
     namespace = "io.github.libxposed.api"
     compileSdk = 36
     buildToolsVersion = "36.1.0"
+    androidResources.enable = false
 
     defaultConfig {
         minSdk = 24
