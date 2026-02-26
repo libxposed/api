@@ -110,23 +110,9 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public final MethodInvoker getInvoker(@NonNull Method method, @NonNull Invoker.Type type) {
-        ensureAttached();
-        return mBase.getInvoker(method, type);
-    }
-
-    @NonNull
-    @Override
     public final <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor) {
         ensureAttached();
         return mBase.getInvoker(constructor);
-    }
-
-    @NonNull
-    @Override
-    public final <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor, @NonNull Invoker.Type type) {
-        ensureAttached();
-        return mBase.getInvoker(constructor, type);
     }
 
     @Override

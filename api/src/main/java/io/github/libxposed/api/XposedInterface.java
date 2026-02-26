@@ -55,7 +55,10 @@ public interface XposedInterface {
      *
      * @param <T> {@link Method} or {@link Constructor}
      */
-    interface Invoker<T extends Executable> {
+    interface Invoker<T extends Invoker<T, U>, U extends Executable> {
+        /**
+         * Type of the invoker, which determines the hook chain to be invoked
+         */
         sealed interface Type permits Type.Origin, Type.Chain {
             /**
              * A convenience constant for {@link Origin}.
@@ -81,12 +84,17 @@ public interface XposedInterface {
                 public static final Chain FULL = new Chain(PRIORITY_HIGHEST);
             }
         }
+
+        /**
+         * Sets the type of the invoker, which determines the hook chain to be invoked
+         */
+        T setType(@NonNull Type type);
     }
 
     /**
      * Invoker for a method.
      */
-    interface MethodInvoker extends Invoker<Method> {
+    interface MethodInvoker extends Invoker<MethodInvoker, Method> {
         /**
          * Invokes the method through the hook chain determined by the invoker's type.
          *
@@ -120,7 +128,7 @@ public interface XposedInterface {
      *
      * @param <T> The type of the constructor
      */
-    interface CtorInvoker<T> extends Invoker<Constructor<T>> {
+    interface CtorInvoker<T> extends Invoker<CtorInvoker<T>, Constructor<T>> {
         /**
          * Invokes the constructor as a method on an existing instance through the hook chain
          * determined by the invoker's type.
@@ -530,7 +538,7 @@ public interface XposedInterface {
     boolean deoptimize(@NonNull Executable executable);
 
     /**
-     * Get a method invoker for the given method with full hook chain.
+     * Get a method invoker for the given method.
      *
      * @param method The method to get the invoker for
      * @return The method invoker
@@ -539,18 +547,7 @@ public interface XposedInterface {
     MethodInvoker getInvoker(@NonNull Method method);
 
     /**
-     * Get a method invoker for the given method and type.
-     *
-     * @param method The method to get the invoker for
-     * @param type   The type of the invoker, can be used to invoke the original method or to invoke
-     *               the method starting from a specific priority in the hook chain
-     * @return The method invoker
-     */
-    @NonNull
-    MethodInvoker getInvoker(@NonNull Method method, @NonNull Invoker.Type type);
-
-    /**
-     * Get a constructor invoker for the given constructor with full hook chain.
+     * Get a constructor invoker for the given constructor.
      *
      * @param constructor The constructor to get the invoker for
      * @param <T>         The type of the constructor
@@ -558,18 +555,6 @@ public interface XposedInterface {
      */
     @NonNull
     <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor);
-
-    /**
-     * Get a constructor invoker for the given constructor and type.
-     *
-     * @param constructor The constructor to get the invoker for
-     * @param type        The type of the invoker, can be used to invoke the original method or to invoke
-     *                    the method starting from a specific priority in the hook chain
-     * @param <T>         The type of the constructor
-     * @return The constructor invoker
-     */
-    @NonNull
-    <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor, @NonNull Invoker.Type type);
 
     /**
      * Writes a message to the Xposed log.
