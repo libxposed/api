@@ -16,9 +16,9 @@ public interface XposedModuleInterface {
      */
     interface ModuleLoadedParam {
         /**
-         * Gets information about whether the module is running in system server.
+         * Returns whether the current process is system server.
          *
-         * @return {@code true} if the module is running in system server
+         * @return {@code true} if the current process is system server
          */
         boolean isSystemServer();
 
@@ -67,7 +67,7 @@ public interface XposedModuleInterface {
         /**
          * Gets default class loader.
          *
-         * @return the default class loader
+         * @return The default class loader
          */
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
@@ -82,7 +82,7 @@ public interface XposedModuleInterface {
         ClassLoader getClassLoader();
 
         /**
-         * Gets information about whether is this package the first and main package of the app process.
+         * Returns whether this is the first and main package loaded in the app process.
          *
          * @return {@code true} if this is the first package.
          */

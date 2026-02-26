@@ -17,7 +17,7 @@ import java.nio.ByteBuffer;
 import io.github.libxposed.api.utils.DexParser;
 
 /**
- * Wrap of {@link XposedInterface} used by the modules for the purpose of shielding framework implementation details.
+ * Wrapper of {@link XposedInterface} used by modules to shield framework implementation details.
  */
 public class XposedInterfaceWrapper implements XposedInterface {
 
@@ -76,44 +76,23 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public final HookHandle<Method> hook(@NonNull Method origin, @NonNull MethodHooker hooker) {
+    public final MethodHookBuilder hook(@NonNull Method origin) {
         ensureAttached();
-        return mBase.hook(origin, hooker);
+        return mBase.hook(origin);
     }
 
     @NonNull
     @Override
-    public final HookHandle<Method> hook(@NonNull Method origin, int priority, @NonNull MethodHooker hooker) {
+    public final <T> CtorHookBuilder<T> hook(@NonNull Constructor<T> origin) {
         ensureAttached();
-        return mBase.hook(origin, priority, hooker);
+        return mBase.hook(origin);
     }
 
     @NonNull
     @Override
-    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull CtorHooker<T> hooker) {
+    public final MethodHookBuilder hookClassInitializer(@NonNull Class<?> origin) {
         ensureAttached();
-        return mBase.hook(origin, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final <T> HookHandle<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull CtorHooker<T> hooker) {
-        ensureAttached();
-        return mBase.hook(origin, priority, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final HookHandle<Method> hookClassInitializer(@NonNull Class<?> origin, @NonNull MethodHooker hooker) {
-        ensureAttached();
-        return mBase.hookClassInitializer(origin, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final HookHandle<Method> hookClassInitializer(@NonNull Class<?> origin, int priority, @NonNull MethodHooker hooker) {
-        ensureAttached();
-        return mBase.hookClassInitializer(origin, priority, hooker);
+        return mBase.hookClassInitializer(origin);
     }
 
     @Override

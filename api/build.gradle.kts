@@ -93,5 +93,6 @@ signing {
 
 dependencies {
     compileOnly(libs.annotation)
+    compileOnly(libs.kotlin.stdlib)
     lintPublish(project(":checks"))
 }
