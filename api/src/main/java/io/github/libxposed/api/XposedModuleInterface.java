@@ -1,5 +1,6 @@
 package io.github.libxposed.api;
 
+import android.app.AppComponentFactory;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 
@@ -49,7 +50,7 @@ public interface XposedModuleInterface {
      */
     interface PackageLoadedParam {
         /**
-         * Gets the package name of the package being loaded.
+         * Gets the package name of the current package.
          *
          * @return The package name.
          */
@@ -57,7 +58,7 @@ public interface XposedModuleInterface {
         String getPackageName();
 
         /**
-         * Gets the {@link ApplicationInfo} of the package being loaded.
+         * Gets the {@link ApplicationInfo} of the current package.
          *
          * @return The ApplicationInfo.
          */
@@ -65,9 +66,8 @@ public interface XposedModuleInterface {
         ApplicationInfo getApplicationInfo();
 
         /**
-         * Gets default class loader.
-         *
-         * @return The default class loader
+         * Gets the default classloader of the current package. This is the classloader that loads
+         * the app's code, resources and custom {@link AppComponentFactory}.
          */
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
@@ -83,12 +83,18 @@ public interface XposedModuleInterface {
 
     interface PackageReadyParam extends PackageLoadedParam {
         /**
-         * Gets the class loader of the package being loaded.
-         *
-         * @return The class loader.
+         * Gets the classloader of the current package. It may be different from {@link #getDefaultClassLoader()}
+         * if the package has a custom {@link android.app.AppComponentFactory} that creates a different classloader.
          */
         @NonNull
         ClassLoader getClassLoader();
+
+        /**
+         * Gets the {@link AppComponentFactory} of the current package.
+         */
+        @RequiresApi(Build.VERSION_CODES.P)
+        @NonNull
+        AppComponentFactory getAppComponentFactory();
     }
 
     /**
