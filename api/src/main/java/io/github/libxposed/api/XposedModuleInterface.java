@@ -74,14 +74,6 @@ public interface XposedModuleInterface {
         ClassLoader getDefaultClassLoader();
 
         /**
-         * Gets the class loader of the package being loaded.
-         *
-         * @return The class loader.
-         */
-        @NonNull
-        ClassLoader getClassLoader();
-
-        /**
          * Returns whether this is the first and main package loaded in the app process.
          *
          * @return {@code true} if this is the first package.
@@ -89,10 +81,19 @@ public interface XposedModuleInterface {
         boolean isFirstPackage();
     }
 
+    interface PackageReadyParam extends PackageLoadedParam {
+        /**
+         * Gets the class loader of the package being loaded.
+         *
+         * @return The class loader.
+         */
+        @NonNull
+        ClassLoader getClassLoader();
+    }
+
     /**
      * Gets notified when the module is loaded into the target process.<br/>
-     * This callback is guaranteed to be called exactly once for a process before
-     * {@link android.app.AppComponentFactory} is created.
+     * This callback is guaranteed to be called exactly once for a process.
      *
      * @param param Information about the process in which the module is loaded
      */
@@ -100,12 +101,24 @@ public interface XposedModuleInterface {
     }
 
     /**
-     * Gets notified when a package is loaded into the app process.<br/>
+     * Gets notified when a package is loaded into the app process. This is the time when the default
+     * classloader is ready but before the instantiation of custom {@link android.app.AppComponentFactory}.<br/>
      * This callback could be invoked multiple times for the same process on each package.
      *
      * @param param Information about the package being loaded
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     default void onPackageLoaded(@NonNull PackageLoadedParam param) {
+    }
+
+    /**
+     * Gets notified when custom {@link android.app.AppComponentFactory} has instantiated the app
+     * classloader and is ready to create {@link android.app.Activity} and {@link android.app.Service}.<br/>
+     * This callback could be invoked multiple times for the same process on each package.
+     *
+     * @param param Information about the package being loaded
+     */
+    default void onPackageReady(@NonNull PackageReadyParam param) {
     }
 
     /**
