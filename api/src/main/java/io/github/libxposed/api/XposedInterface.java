@@ -299,7 +299,7 @@ public interface XposedInterface {
          * @param thisObject The instance being constructed
          * @throws Throwable if any interceptor or the original constructor throws an exception
          */
-        void proceedWith(@NonNull Object thisObject) throws Throwable;
+        void proceedWith(@NonNull T thisObject) throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the given arguments and {@code this} pointer.
@@ -308,7 +308,7 @@ public interface XposedInterface {
          * @param args       The arguments used for the construction
          * @throws Throwable if any interceptor or the original constructor throws an exception
          */
-        void proceedWith(@NonNull Object thisObject, Object... args) throws Throwable;
+        void proceedWith(@NonNull T thisObject, Object... args) throws Throwable;
     }
 
     /**
