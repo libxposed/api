@@ -33,19 +33,6 @@ public interface XposedModuleInterface {
     }
 
     /**
-     * Wraps information about system server.
-     */
-    interface SystemServerLoadedParam {
-        /**
-         * Gets the class loader of system server.
-         *
-         * @return The class loader
-         */
-        @NonNull
-        ClassLoader getClassLoader();
-    }
-
-    /**
      * Wraps information about the package being loaded.
      */
     interface PackageLoadedParam {
@@ -81,6 +68,9 @@ public interface XposedModuleInterface {
         boolean isFirstPackage();
     }
 
+    /**
+     * Wraps information about the package whose classloader is ready.
+     */
     interface PackageReadyParam extends PackageLoadedParam {
         /**
          * Gets the classloader of the current package. It may be different from {@link #getDefaultClassLoader()}
@@ -95,6 +85,17 @@ public interface XposedModuleInterface {
         @RequiresApi(Build.VERSION_CODES.P)
         @NonNull
         AppComponentFactory getAppComponentFactory();
+    }
+
+    /**
+     * Wraps information about system server.
+     */
+    interface SystemServerStartingParam {
+        /**
+         * Gets the class loader of system server.
+         */
+        @NonNull
+        ClassLoader getClassLoader();
     }
 
     /**
@@ -128,10 +129,10 @@ public interface XposedModuleInterface {
     }
 
     /**
-     * Gets notified when the system server is loaded.
+     * Gets notified when system server is ready to start critical services.
      *
      * @param param Information about system server
      */
-    default void onSystemServerLoaded(@NonNull SystemServerLoadedParam param) {
+    default void onSystemServerStarting(@NonNull SystemServerStartingParam param) {
     }
 }
