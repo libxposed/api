@@ -8,16 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import io.github.libxposed.api.errors.HookFailedError;
-import io.github.libxposed.api.utils.DexParser;
 
 /**
  * Xposed interface for modules to operate on application processes.
@@ -530,9 +527,9 @@ public interface XposedInterface {
      * you can deoptimize A and then your hook can take effect.</p>
      *
      * <p>Generally, you need to find all the callers of your hooked callee, and that can hardly be achieved
-     * (but you can still search all callers by using {@link DexParser}). Use this method if you are sure
-     * the deoptimized callers are all you need. Otherwise, it would be better to change the hook point or
-     * to deoptimize the whole app manually (by simply reinstalling the app without uninstall).</p>
+     * (but you can still search all callers by using <a href="https://github.com/LuckyPray/DexKit">DexKit</a>).
+     * Use this method if you are sure the deoptimized callers are all you need. Otherwise, it would be better to
+     * change the hook point or to deoptimize the whole app manually (by simply reinstalling the app without uninstall).</p>
      *
      * @param executable The method / constructor to deoptimize
      * @return Indicate whether the deoptimizing succeed or not
@@ -578,17 +575,6 @@ public interface XposedInterface {
      * @param tr       An exception to log
      */
     void log(int priority, @Nullable String tag, @NonNull String msg, @Nullable Throwable tr);
-
-    /**
-     * Parse a dex file in memory.
-     *
-     * @param dexData            The content of the dex file
-     * @param includeAnnotations Whether to include annotations
-     * @return The {@link DexParser} of the dex file
-     * @throws IOException if the dex file is invalid
-     */
-    @Nullable
-    DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException;
 
     /**
      * Gets the application info of the module.

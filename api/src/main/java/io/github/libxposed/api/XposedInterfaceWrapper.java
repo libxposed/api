@@ -8,13 +8,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-
-import io.github.libxposed.api.utils.DexParser;
 
 /**
  * Wrapper of {@link XposedInterface} used by modules to shield framework implementation details.
@@ -125,13 +121,6 @@ public class XposedInterfaceWrapper implements XposedInterface {
     public final void log(int priority, @Nullable String tag, @NonNull String msg, @Nullable Throwable tr) {
         ensureAttached();
         mBase.log(priority, tag, msg, tr);
-    }
-
-    @Nullable
-    @Override
-    public final DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException {
-        ensureAttached();
-        return mBase.parseDex(dexData, includeAnnotations);
     }
 
     @NonNull
