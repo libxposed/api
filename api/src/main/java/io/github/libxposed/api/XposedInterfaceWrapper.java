@@ -17,7 +17,7 @@ import java.lang.reflect.Method;
  */
 public class XposedInterfaceWrapper implements XposedInterface {
 
-    private XposedInterface mBase;
+    private volatile XposedInterface mBase;
 
     /**
      * Attaches the framework interface to the module. Modules should never call this method.

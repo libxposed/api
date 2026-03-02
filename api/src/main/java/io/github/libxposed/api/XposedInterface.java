@@ -449,7 +449,7 @@ public interface XposedInterface {
     }
 
     /**
-     * Gets the Xposed API version. Framework implementations must <b>not</b> override this method.
+     * Gets the runtime Xposed API version. Framework implementations must <b>not</b> override this method.
      *
      * @return API version
      */
@@ -507,12 +507,21 @@ public interface XposedInterface {
     <T> CtorHookBuilder<T> hook(@NonNull Constructor<T> origin);
 
     /**
-     * Hook the static initializer of a class.
-     * <p>
-     * Note: If the class is initialized, the hook will never be called.
-     * </p>
+     * Hook the static initializer ({@code <clinit>}) of a class.
      *
-     * @param origin The class to be hooked
+     * <p>The static initializer is treated as a regular {@code static void()} method with no parameters.
+     * Accordingly, in the {@link MethodChain} passed to the hooker:</p>
+     * <ul>
+     *     <li>{@link MethodChain#getExecutable()} returns a synthetic {@link Method} representing
+     *     the static initializer.</li>
+     *     <li>{@link MethodChain#getThisObject()} always returns {@code null}.</li>
+     *     <li>{@link MethodChain#getArgs()} returns an empty list.</li>
+     *     <li>{@link MethodChain#proceed()} returns {@code null}.</li>
+     * </ul>
+     *
+     * <p>Note: If the class is already initialized, the hook will never be called.</p>
+     *
+     * @param origin The class whose static initializer is to be hooked
      * @return The builder for the hook
      */
     @NonNull
