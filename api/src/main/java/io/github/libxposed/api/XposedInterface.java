@@ -452,11 +452,13 @@ public interface XposedInterface {
     }
 
     /**
-     * Gets the Xposed API version of current implementation.
+     * Gets the Xposed API version. Framework implementations must <b>not</b> override this method.
      *
      * @return API version
      */
-    int getApiVersion();
+    default int getApiVersion() {
+        return 101;
+    }
 
     /**
      * Gets the Xposed framework name of current implementation.
