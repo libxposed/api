@@ -16,4 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "libxposed-api"
 
-include(":api", ":checks")
+include(":api")

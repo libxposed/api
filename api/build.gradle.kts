@@ -32,6 +32,11 @@ android {
     }
 }
 
+dependencies {
+    compileOnly(libs.annotation)
+    compileOnly(libs.kotlin.stdlib)
+}
+
 publishing {
     publications {
         register<MavenPublication>("api") {
@@ -88,11 +93,4 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
     }
-}
-
-
-dependencies {
-    compileOnly(libs.annotation)
-    compileOnly(libs.kotlin.stdlib)
-    lintPublish(project(":checks"))
 }
