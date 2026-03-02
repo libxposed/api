@@ -14,7 +14,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import io.github.libxposed.api.errors.HookFailedError;
+import io.github.libxposed.api.error.HookFailedError;
 
 /**
  * Xposed interface for modules to operate on application processes.

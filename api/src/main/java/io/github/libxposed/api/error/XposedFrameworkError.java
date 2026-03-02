@@ -1,4 +1,4 @@
-package io.github.libxposed.api.errors;
+package io.github.libxposed.api.error;
 
 /**
  * Thrown to indicate that the Xposed framework function is broken.
