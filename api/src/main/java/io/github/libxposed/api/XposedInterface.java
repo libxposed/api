@@ -22,6 +22,12 @@ import io.github.libxposed.api.error.HookFailedError;
 @SuppressWarnings("unused")
 public interface XposedInterface {
     /**
+     * The API version of this <b>library</b>. This is a static value for the framework.
+     * Modules should use {@link #getApiVersion()} to check the API version at runtime.
+     */
+    int LIB_API = 101;
+
+    /**
      * The framework has the capability to hook system_server and other system processes.
      */
     long CAP_SYSTEM = 1L;
@@ -454,7 +460,7 @@ public interface XposedInterface {
      * @return API version
      */
     default int getApiVersion() {
-        return 101;
+        return LIB_API;
     }
 
     /**
