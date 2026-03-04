@@ -30,15 +30,15 @@ public interface XposedInterface {
     /**
      * The framework has the capability to hook system_server and other system processes.
      */
-    long CAP_SYSTEM = 1L;
+    long PROP_CAP_SYSTEM = 1L;
     /**
      * The framework provides remote preferences and remote files support.
      */
-    long CAP_REMOTE = 1L << 1;
+    long PROP_CAP_REMOTE = 1L << 1;
     /**
-     * The framework allows dynamically loaded code to use Xposed APIs.
+     * The framework disallows accessing Xposed API via reflection or dynamically loaded code.
      */
-    long CAP_RT_DYNAMIC_CODE_API_ACCESS = 1L << 2;
+    long PROP_RT_API_PROTECTION = 1L << 2;
 
     /**
      * The default hook priority.
@@ -456,8 +456,6 @@ public interface XposedInterface {
 
     /**
      * Gets the runtime Xposed API version. Framework implementations must <b>not</b> override this method.
-     *
-     * @return API version
      */
     default int getApiVersion() {
         return LIB_API;
@@ -465,34 +463,26 @@ public interface XposedInterface {
 
     /**
      * Gets the Xposed framework name of current implementation.
-     *
-     * @return Framework name
      */
     @NonNull
     String getFrameworkName();
 
     /**
      * Gets the Xposed framework version of current implementation.
-     *
-     * @return Framework version
      */
     @NonNull
     String getFrameworkVersion();
 
     /**
      * Gets the Xposed framework version code of current implementation.
-     *
-     * @return Framework version code
      */
     long getFrameworkVersionCode();
 
     /**
-     * Gets the Xposed framework capabilities.
-     * Capabilities with prefix CAP_RT_ may change among launches.
-     *
-     * @return Framework capabilities
+     * Gets the Xposed framework properties.
+     * Properties with prefix PROP_RT_ may change among launches.
      */
-    long getFrameworkCapabilities();
+    long getFrameworkProperties();
 
     /**
      * Hook a method.

@@ -65,9 +65,9 @@ public class XposedInterfaceWrapper implements XposedInterface {
     }
 
     @Override
-    public final long getFrameworkCapabilities() {
+    public final long getFrameworkProperties() {
         ensureAttached();
-        return mBase.getFrameworkCapabilities();
+        return mBase.getFrameworkProperties();
     }
 
     @NonNull
