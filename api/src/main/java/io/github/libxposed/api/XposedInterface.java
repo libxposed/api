@@ -242,7 +242,7 @@ public interface XposedInterface {
          * @throws Throwable if any interceptor or the original method throws an exception
          */
         @Nullable
-        Object proceed(Object... args) throws Throwable;
+        Object proceed(@NonNull Object[] args) throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the same arguments and given {@code this} pointer.
@@ -267,7 +267,7 @@ public interface XposedInterface {
          * @throws Throwable if any interceptor or the original method throws an exception
          */
         @Nullable
-        Object proceedWith(@NonNull Object thisObject, Object... args) throws Throwable;
+        Object proceedWith(@NonNull Object thisObject, @NonNull Object[] args) throws Throwable;
     }
 
     /**
@@ -294,7 +294,7 @@ public interface XposedInterface {
          * @param args The arguments used for the construction
          * @throws Throwable if any interceptor or the original constructor throws an exception
          */
-        void proceed(Object... args) throws Throwable;
+        void proceed(@NonNull Object[] args) throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the same arguments and given {@code this} pointer.
@@ -311,7 +311,7 @@ public interface XposedInterface {
          * @param args       The arguments used for the construction
          * @throws Throwable if any interceptor or the original constructor throws an exception
          */
-        void proceedWith(@NonNull T thisObject, Object... args) throws Throwable;
+        void proceedWith(@NonNull T thisObject, @NonNull Object[] args) throws Throwable;
     }
 
     /**
