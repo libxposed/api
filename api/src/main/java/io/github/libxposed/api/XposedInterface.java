@@ -55,8 +55,6 @@ public interface XposedInterface {
 
     /**
      * Invoker for a method or constructor.
-     *
-     * @param <T> {@link Method} or {@link Constructor}
      */
     interface Invoker<T extends Invoker<T, U>, U extends Executable> {
         /**
@@ -92,34 +90,33 @@ public interface XposedInterface {
          * Sets the type of the invoker, which determines the hook chain to be invoked
          */
         T setType(@NonNull Type type);
-    }
 
-    /**
-     * Invoker for a method.
-     */
-    interface MethodInvoker extends Invoker<MethodInvoker, Method> {
         /**
-         * Invokes the method through the hook chain determined by the invoker's type.
+         * Invokes the method (or the constructor as a method) through the hook chain determined by
+         * the invoker's type.
          *
          * @param thisObject For non-static calls, the {@code this} pointer, otherwise {@code null}
          * @param args       The arguments used for the method call
          * @return The result returned from the invoked method
+         * <p>For void methods and constructors, always returns {@code null}.</p>
          * @see Method#invoke(Object, Object...)
          */
         @Nullable
-        Object invoke(@Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
+        Object invoke(Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
         /**
-         * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
-         * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
-         * object. This method is useful when you need to call a specific method on an object, bypassing any
-         * overridden methods in subclasses and directly invoking the method defined in the specified class.
+         * Invokes the special (non-virtual) method (or the constructor as a method) on a given object
+         * instance, similar to the functionality of {@code CallNonVirtual<type>Method} in JNI, which invokes
+         * an instance (nonstatic) method on a Java object. This method is useful when you need to call
+         * a specific method on an object, bypassing any overridden methods in subclasses and
+         * directly invoking the method defined in the specified class.
          *
          * <p>This method is useful when you need to call {@code super.xxx()} in a hooked constructor.</p>
          *
          * @param thisObject The {@code this} pointer
          * @param args       The arguments used for the method call
          * @return The result returned from the invoked method
+         * <p>For void methods and constructors, always returns {@code null}.</p>
          * @see Method#invoke(Object, Object...)
          */
         @Nullable
@@ -133,16 +130,6 @@ public interface XposedInterface {
      */
     interface CtorInvoker<T> extends Invoker<CtorInvoker<T>, Constructor<T>> {
         /**
-         * Invokes the constructor as a method on an existing instance through the hook chain
-         * determined by the invoker's type.
-         *
-         * @param thisObject The instance to be constructed
-         * @param args       The arguments used for the construction
-         * @see Constructor#newInstance(Object...)
-         */
-        void invoke(@NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
-
-        /**
          * Creates a new instance through the hook chain determined by the invoker's type.
          *
          * @param args The arguments used for the construction
@@ -151,20 +138,6 @@ public interface XposedInterface {
          */
         @NonNull
         T newInstance(Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException;
-
-        /**
-         * Invokes a special (non-virtual) method on a given object instance, similar to the functionality of
-         * {@code CallNonVirtual<type>Method} in JNI, which invokes an instance (nonstatic) method on a Java
-         * object. This method is useful when you need to call a specific method on an object, bypassing any
-         * overridden methods in subclasses and directly invoking the method defined in the specified class.
-         *
-         * <p>This method is useful when you need to call {@code super.xxx()} in a hooked constructor.</p>
-         *
-         * @param thisObject The instance to be constructed
-         * @param args       The arguments used for the construction
-         * @see Constructor#newInstance(Object...)
-         */
-        void invokeSpecial(@NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
         /**
          * Creates a new instance of the given subclass, but initializes it with a parent constructor. This could
@@ -211,107 +184,57 @@ public interface XposedInterface {
          */
         @Nullable
         <U> U getArg(int index) throws IndexOutOfBoundsException, ClassCastException;
-    }
 
-    /**
-     * Interceptor chain for a method.
-     */
-    interface MethodChain extends Chain<Method> {
         /**
-         * Gets the {@code this} pointer for the method call, or {@code null} for static calls.
+         * Gets the {@code this} pointer for the call, or {@code null} for static methods.
          */
-        @Nullable
         Object getThisObject();
 
         /**
          * Proceeds to the next interceptor in the chain with the same arguments and {@code this} pointer.
          *
-         * @return The result returned from next interceptor or the original method if current
-         * interceptor is the last one in the chain. For void methods, always returns {@code null}.
-         * @throws Throwable if any interceptor or the original method throws an exception
+         * @return The result returned from next interceptor or the original executable if current
+         * interceptor is the last one in the chain.
+         * <p>For void methods and constructors, always returns {@code null}.</p>
+         * @throws Throwable if any interceptor or the original executable throws an exception
          */
-        @Nullable
         Object proceed() throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the given arguments and the same {@code this} pointer.
          *
-         * @param args The arguments used for the method call
-         * @return The result returned from next interceptor or the original method if current
-         * interceptor is the last one in the chain. For void methods, always returns {@code null}.
-         * @throws Throwable if any interceptor or the original method throws an exception
+         * @param args The arguments used for the call
+         * @return The result returned from next interceptor or the original executable if current
+         * interceptor is the last one in the chain.
+         * <p>For void methods and constructors, always returns {@code null}.</p>
+         * @throws Throwable if any interceptor or the original executable throws an exception
          */
-        @Nullable
         Object proceed(@NonNull Object[] args) throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the same arguments and given {@code this} pointer.
          * Static method interceptors should not call this.
          *
-         * @param thisObject The {@code this} pointer for the method call
-         * @return The result returned from next interceptor or the original method if current
-         * interceptor is the last one in the chain. For void methods, always returns {@code null}.
-         * @throws Throwable if any interceptor or the original method throws an exception
+         * @param thisObject The {@code this} pointer for the call
+         * @return The result returned from next interceptor or the original executable if current
+         * interceptor is the last one in the chain.
+         * <p>For void methods and constructors, always returns {@code null}.</p>
+         * @throws Throwable if any interceptor or the original executable throws an exception
          */
-        @Nullable
         Object proceedWith(@NonNull Object thisObject) throws Throwable;
 
         /**
          * Proceeds to the next interceptor in the chain with the given arguments and {@code this} pointer.
          * Static method interceptors should not call this.
          *
-         * @param thisObject The {@code this} pointer for the method call
-         * @param args       The arguments used for the method call
-         * @return The result returned from next interceptor or the original method if current
-         * interceptor is the last one in the chain. For void methods, always returns {@code null}.
-         * @throws Throwable if any interceptor or the original method throws an exception
+         * @param thisObject The {@code this} pointer for the call
+         * @param args       The arguments used for the call
+         * @return The result returned from next interceptor or the original executable if current
+         * interceptor is the last one in the chain.
+         * <p>For void methods and constructors, always returns {@code null}.</p>
+         * @throws Throwable if any interceptor or the original executable throws an exception
          */
-        @Nullable
         Object proceedWith(@NonNull Object thisObject, @NonNull Object[] args) throws Throwable;
-    }
-
-    /**
-     * Interceptor chain for a constructor.
-     */
-    interface CtorChain<T> extends Chain<Constructor<T>> {
-        /**
-         * Gets the instance being constructed. Note that the instance may be not fully initialized when
-         * the chain is called.
-         */
-        @NonNull
-        T getThisObject();
-
-        /**
-         * Proceeds to the next interceptor in the chain with the same arguments and {@code this} pointer.
-         *
-         * @throws Throwable if any interceptor or the original constructor throws an exception
-         */
-        void proceed() throws Throwable;
-
-        /**
-         * Proceeds to the next interceptor in the chain with the given arguments and the same {@code this} pointer.
-         *
-         * @param args The arguments used for the construction
-         * @throws Throwable if any interceptor or the original constructor throws an exception
-         */
-        void proceed(@NonNull Object[] args) throws Throwable;
-
-        /**
-         * Proceeds to the next interceptor in the chain with the same arguments and given {@code this} pointer.
-         *
-         * @param thisObject The instance being constructed
-         * @throws Throwable if any interceptor or the original constructor throws an exception
-         */
-        void proceedWith(@NonNull T thisObject) throws Throwable;
-
-        /**
-         * Proceeds to the next interceptor in the chain with the given arguments and {@code this} pointer.
-         *
-         * @param thisObject The instance being constructed
-         * @param args       The arguments used for the construction
-         * @throws Throwable if any interceptor or the original constructor throws an exception
-         */
-        void proceedWith(@NonNull T thisObject, @NonNull Object[] args) throws Throwable;
     }
 
     /**
@@ -320,53 +243,18 @@ public interface XposedInterface {
      * @param <T> {@link Method} or {@link Constructor}
      */
     interface Hooker<T extends Executable> {
-    }
-
-    /**
-     * Hooker for a method.
-     */
-    interface MethodHooker extends Hooker<Method> {
         /**
-         * Intercepts a method call.
+         * Intercepts a method / constructor call.
          *
-         * @param chain The interceptor chain for the method call
+         * @param chain The interceptor chain for the call
          * @return The result to be returned from the interceptor. If the hooker does not want to
          * change the result, it should call {@code chain.proceed()} and return its result.
-         * <p>For void methods, the return value is ignored by the framework.</p>
+         * <p>For void methods and constructors, the return value is ignored by the framework.</p>
          * @throws Throwable Throw any exception from the interceptor. The exception will
          *                   propagate to the caller if not caught by any interceptor.
          */
         @Nullable
-        Object intercept(@NonNull MethodChain chain) throws Throwable;
-    }
-
-    /**
-     * Utility hooker for a void method. Used in Java lambda where unit return type is not supported.
-     */
-    @kotlin.Deprecated(message = "Hidden from Kotlin", level = kotlin.DeprecationLevel.HIDDEN)
-    interface VoidMethodHooker extends Hooker<Method> {
-        /**
-         * Intercepts a method call.
-         *
-         * @param chain The interceptor chain for the method call
-         * @throws Throwable Throw any exception from the interceptor. The exception will
-         *                   propagate to the caller if not caught by any interceptor.
-         */
-        void intercept(@NonNull MethodChain chain) throws Throwable;
-    }
-
-    /**
-     * Hooker for a constructor.
-     */
-    interface CtorHooker<T> extends Hooker<Constructor<T>> {
-        /**
-         * Intercepts a constructor call.
-         *
-         * @param chain The interceptor chain for the constructor call
-         * @throws Throwable Throw any exception from the interceptor. The exception will
-         *                   propagate to the caller if not caught by any interceptor.
-         */
-        void intercept(@NonNull CtorChain<T> chain) throws Throwable;
+        Object intercept(@NonNull Chain<T> chain) throws Throwable;
     }
 
     /**
@@ -390,10 +278,9 @@ public interface XposedInterface {
     /**
      * Builder for configuring a hook.
      *
-     * @param <T> The concrete builder type for chaining
-     * @param <U> {@link Method} or {@link Constructor}
+     * @param <T> {@link Method} or {@link Constructor}
      */
-    interface HookBuilder<T extends HookBuilder<T, U>, U extends Executable> {
+    interface HookBuilder<T extends Executable> {
         /**
          * Sets the priority of the hook. Hooks with higher priority will be called before hooks with lower
          * priority. The default priority is {@link XposedInterface#PRIORITY_DEFAULT}.
@@ -401,48 +288,10 @@ public interface XposedInterface {
          * @param priority The priority of the hook
          * @return The builder itself for chaining
          */
-        T setPriority(int priority);
-    }
-
-    /**
-     * Builder for a method hook.
-     */
-    interface MethodHookBuilder extends HookBuilder<MethodHookBuilder, Method> {
-        /**
-         * Sets the hooker for the method and builds the hook.
-         *
-         * @param hooker The hooker object
-         * @return The handle for the hook
-         * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
-         *                                  or hooker is invalid
-         * @throws HookFailedError          if hook fails due to framework internal error
-         */
-        @NonNull
-        HookHandle<Method> intercept(@NonNull MethodHooker hooker);
+        HookBuilder<T> setPriority(int priority);
 
         /**
-         * Sets a void hooker for the method and builds the hook. This is a utility method for Java
-         * lambda where unit return type is not supported.
-         *
-         * @param hooker The hooker object
-         * @return The handle for the hook
-         * @throws IllegalArgumentException if origin is abstract, framework internal or {@link Method#invoke},
-         *                                  or hooker is invalid
-         * @throws HookFailedError          if hook fails due to framework internal error
-         */
-        @kotlin.Deprecated(message = "Hidden from Kotlin", level = kotlin.DeprecationLevel.HIDDEN)
-        @NonNull
-        HookHandle<Method> intercept(@NonNull VoidMethodHooker hooker);
-    }
-
-    /**
-     * Builder for a constructor hook.
-     *
-     * @param <T> The type of the constructor
-     */
-    interface CtorHookBuilder<T> extends HookBuilder<CtorHookBuilder<T>, Constructor<T>> {
-        /**
-         * Sets the hooker for the constructor and builds the hook.
+         * Sets the hooker for the method / constructor and builds the hook.
          *
          * @param hooker The hooker object
          * @return The handle for the hook
@@ -451,7 +300,7 @@ public interface XposedInterface {
          * @throws HookFailedError          if hook fails due to framework internal error
          */
         @NonNull
-        HookHandle<Constructor<T>> intercept(@NonNull CtorHooker<T> hooker);
+        HookHandle<T> intercept(@NonNull Hooker<T> hooker);
     }
 
     /**
@@ -480,39 +329,30 @@ public interface XposedInterface {
 
     /**
      * Gets the Xposed framework properties.
-     * Properties with prefix PROP_RT_ may change among launches.
+     * Properties with prefix {@code PROP_RT_} may change among launches.
      */
     long getFrameworkProperties();
 
     /**
-     * Hook a method.
+     * Hook a method / constructor.
      *
-     * @param origin The method to be hooked
+     * @param origin The executable to be hooked
      * @return The builder for the hook
      */
     @NonNull
-    MethodHookBuilder hook(@NonNull Method origin);
-
-    /**
-     * Hook a constructor.
-     *
-     * @param origin The constructor to be hooked
-     * @return The builder for the hook
-     */
-    @NonNull
-    <T> CtorHookBuilder<T> hook(@NonNull Constructor<T> origin);
+    <T extends Executable> HookBuilder<T> hook(@NonNull T origin);
 
     /**
      * Hook the static initializer ({@code <clinit>}) of a class.
      *
      * <p>The static initializer is treated as a regular {@code static void()} method with no parameters.
-     * Accordingly, in the {@link MethodChain} passed to the hooker:</p>
+     * Accordingly, in the {@link Chain} passed to the hooker:</p>
      * <ul>
-     *     <li>{@link MethodChain#getExecutable()} returns a synthetic {@link Method} representing
+     *     <li>{@link Chain#getExecutable()} returns a synthetic {@link Method} representing
      *     the static initializer.</li>
-     *     <li>{@link MethodChain#getThisObject()} always returns {@code null}.</li>
-     *     <li>{@link MethodChain#getArgs()} returns an empty list.</li>
-     *     <li>{@link MethodChain#proceed()} returns {@code null}.</li>
+     *     <li>{@link Chain#getThisObject()} always returns {@code null}.</li>
+     *     <li>{@link Chain#getArgs()} returns an empty list.</li>
+     *     <li>{@link Chain#proceed()} returns {@code null}.</li>
      * </ul>
      *
      * <p>Note: If the class is already initialized, the hook will never be called.</p>
@@ -521,7 +361,7 @@ public interface XposedInterface {
      * @return The builder for the hook
      */
     @NonNull
-    MethodHookBuilder hookClassInitializer(@NonNull Class<?> origin);
+    HookBuilder<Method> hookClassInitializer(@NonNull Class<?> origin);
 
     /**
      * Deoptimizes a method / constructor in case hooked callee is not called because of inline.
@@ -549,7 +389,7 @@ public interface XposedInterface {
      * @return The method invoker
      */
     @NonNull
-    MethodInvoker getInvoker(@NonNull Method method);
+    Invoker<?, Method> getInvoker(@NonNull Method method);
 
     /**
      * Get a constructor invoker for the given constructor. The default type of the invoker is
