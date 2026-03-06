@@ -300,7 +300,7 @@ public interface XposedInterface {
          * @throws HookFailedError          if hook fails due to framework internal error
          */
         @NonNull
-        HookHandle<T> intercept(@NonNull Hooker<T> hooker);
+        HookHandle<T> intercept(@NonNull Hooker<? super T> hooker);
     }
 
     /**
