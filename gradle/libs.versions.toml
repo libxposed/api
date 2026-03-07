@@ -2,11 +2,14 @@
 annotation = "1.9.1"
 kotlin = "2.3.10"
 lint = "32.0.1"
-agp = "9.0.1"
+agp = "9.1.0"
+dokka = "2.1.0"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 agp-lib = { id = "com.android.library", version.ref = "agp" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+dokka-javadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
 
 [libraries]
 annotation = { module = "androidx.annotation:annotation", version.ref = "annotation" }
