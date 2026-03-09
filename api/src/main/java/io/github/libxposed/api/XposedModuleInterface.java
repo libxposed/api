@@ -53,19 +53,19 @@ public interface XposedModuleInterface {
         ApplicationInfo getApplicationInfo();
 
         /**
+         * Returns whether this is the first and main package loaded in the app process.
+         *
+         * @return {@code true} if this is the first package.
+         */
+        boolean isFirstPackage();
+
+        /**
          * Gets the default classloader of the current package. This is the classloader that loads
          * the app's code, resources and custom {@link AppComponentFactory}.
          */
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
         ClassLoader getDefaultClassLoader();
-
-        /**
-         * Returns whether this is the first and main package loaded in the app process.
-         *
-         * @return {@code true} if this is the first package.
-         */
-        boolean isFirstPackage();
     }
 
     /**

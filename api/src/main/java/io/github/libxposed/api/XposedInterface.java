@@ -101,7 +101,6 @@ public interface XposedInterface {
          * <p>For void methods and constructors, always returns {@code null}.</p>
          * @see Method#invoke(Object, Object...)
          */
-        @Nullable
         Object invoke(Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
 
         /**
@@ -119,7 +118,6 @@ public interface XposedInterface {
          * <p>For void methods and constructors, always returns {@code null}.</p>
          * @see Method#invoke(Object, Object...)
          */
-        @Nullable
         Object invokeSpecial(@NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException;
     }
 
@@ -167,6 +165,11 @@ public interface XposedInterface {
         Executable getExecutable();
 
         /**
+         * Gets the {@code this} pointer for the call, or {@code null} for static methods.
+         */
+        Object getThisObject();
+
+        /**
          * Gets the arguments. The returned list is immutable. If you want to change the arguments, you
          * should call {@code proceed(Object...)} or {@code proceedWith(Object, Object...)} with the new
          * arguments.
@@ -182,13 +185,7 @@ public interface XposedInterface {
          * @throws IndexOutOfBoundsException if index is out of bounds
          * @throws ClassCastException        if the argument cannot be cast to the expected type
          */
-        @Nullable
-        <U> U getArg(int index) throws IndexOutOfBoundsException, ClassCastException;
-
-        /**
-         * Gets the {@code this} pointer for the call, or {@code null} for static methods.
-         */
-        Object getThisObject();
+        Object getArg(int index) throws IndexOutOfBoundsException, ClassCastException;
 
         /**
          * Proceeds to the next interceptor in the chain with the same arguments and {@code this} pointer.
@@ -251,7 +248,6 @@ public interface XposedInterface {
          * @throws Throwable Throw any exception from the interceptor. The exception will
          *                   propagate to the caller if not caught by any interceptor.
          */
-        @Nullable
         Object intercept(@NonNull Chain chain) throws Throwable;
     }
 
