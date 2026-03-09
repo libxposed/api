@@ -415,7 +415,7 @@ public interface XposedInterface {
      * Gets the application info of the module.
      */
     @NonNull
-    ApplicationInfo getApplicationInfo();
+    ApplicationInfo getModuleApplicationInfo();
 
     /**
      * Gets remote preferences stored in Xposed framework. Note that those are read-only in hooked apps.

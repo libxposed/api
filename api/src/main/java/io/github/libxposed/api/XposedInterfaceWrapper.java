@@ -125,9 +125,9 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public final ApplicationInfo getApplicationInfo() {
+    public final ApplicationInfo getModuleApplicationInfo() {
         ensureAttached();
-        return mBase.getApplicationInfo();
+        return mBase.getModuleApplicationInfo();
     }
 
     @NonNull
