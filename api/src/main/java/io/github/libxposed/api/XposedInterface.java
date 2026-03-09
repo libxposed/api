@@ -159,12 +159,12 @@ public interface XposedInterface {
     /**
      * Interceptor chain for a method or constructor.
      */
-    interface Chain<T extends Executable> {
+    interface Chain {
         /**
          * Gets the method / constructor being hooked.
          */
         @NonNull
-        T getExecutable();
+        Executable getExecutable();
 
         /**
          * Gets the arguments. The returned list is immutable. If you want to change the arguments, you
@@ -239,10 +239,8 @@ public interface XposedInterface {
 
     /**
      * Hooker for a method or constructor.
-     *
-     * @param <T> {@link Method} or {@link Constructor}
      */
-    interface Hooker<T extends Executable> {
+    interface Hooker {
         /**
          * Intercepts a method / constructor call.
          *
@@ -254,20 +252,18 @@ public interface XposedInterface {
          *                   propagate to the caller if not caught by any interceptor.
          */
         @Nullable
-        Object intercept(@NonNull Chain<T> chain) throws Throwable;
+        Object intercept(@NonNull Chain chain) throws Throwable;
     }
 
     /**
      * Handle for a hook.
-     *
-     * @param <T> {@link Method} or {@link Constructor}
      */
-    interface HookHandle<T extends Executable> {
+    interface HookHandle {
         /**
          * Gets the method / constructor being hooked.
          */
         @NonNull
-        T getExecutable();
+        Executable getExecutable();
 
         /**
          * Cancels the hook. This method is idempotent. It is safe to call this method multiple times.
@@ -277,10 +273,8 @@ public interface XposedInterface {
 
     /**
      * Builder for configuring a hook.
-     *
-     * @param <T> {@link Method} or {@link Constructor}
      */
-    interface HookBuilder<T extends Executable> {
+    interface HookBuilder {
         /**
          * Sets the priority of the hook. Hooks with higher priority will be called before hooks with lower
          * priority. The default priority is {@link XposedInterface#PRIORITY_DEFAULT}.
@@ -288,7 +282,7 @@ public interface XposedInterface {
          * @param priority The priority of the hook
          * @return The builder itself for chaining
          */
-        HookBuilder<T> setPriority(int priority);
+        HookBuilder setPriority(int priority);
 
         /**
          * Sets the hooker for the method / constructor and builds the hook.
@@ -300,7 +294,7 @@ public interface XposedInterface {
          * @throws HookFailedError          if hook fails due to framework internal error
          */
         @NonNull
-        HookHandle<T> intercept(@NonNull Hooker<? super T> hooker);
+        HookHandle intercept(@NonNull Hooker hooker);
     }
 
     /**
@@ -340,7 +334,7 @@ public interface XposedInterface {
      * @return The builder for the hook
      */
     @NonNull
-    <T extends Executable> HookBuilder<T> hook(@NonNull T origin);
+    HookBuilder hook(@NonNull Executable origin);
 
     /**
      * Hook the static initializer ({@code <clinit>}) of a class.
@@ -361,7 +355,7 @@ public interface XposedInterface {
      * @return The builder for the hook
      */
     @NonNull
-    HookBuilder<Method> hookClassInitializer(@NonNull Class<?> origin);
+    HookBuilder hookClassInitializer(@NonNull Class<?> origin);
 
     /**
      * Deoptimizes a method / constructor in case hooked callee is not called because of inline.
