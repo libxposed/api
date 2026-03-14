@@ -155,7 +155,8 @@ public interface XposedInterface {
     }
 
     /**
-     * Interceptor chain for a method or constructor.
+     * Interceptor chain for a method or constructor. Chain objects cannot be shared among threads or
+     * reused after {@link Hooker#intercept(Chain)} ends.
      */
     interface Chain {
         /**
