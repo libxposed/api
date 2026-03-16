@@ -54,7 +54,7 @@ public interface XposedInterface {
     int PRIORITY_HIGHEST = Integer.MAX_VALUE;
 
     /**
-     * Invoker for a method or constructor.
+     * Invoker for a method or constructor. Invocations through invokers will bypass access checks.
      */
     interface Invoker<T extends Invoker<T, U>, U extends Executable> {
         /**
@@ -373,8 +373,8 @@ public interface XposedInterface {
     boolean deoptimize(@NonNull Executable executable);
 
     /**
-     * Get a method invoker for the given method. The default type of the invoker is
-     * {@link Invoker.Type.Chain#FULL}.
+     * Get a method invoker for the given method. Invocations through invokers will bypass access
+     * checks. The default type of the invoker is {@link Invoker.Type.Chain#FULL}.
      *
      * @param method The method to get the invoker for
      * @return The method invoker
@@ -383,8 +383,8 @@ public interface XposedInterface {
     Invoker<?, Method> getInvoker(@NonNull Method method);
 
     /**
-     * Get a constructor invoker for the given constructor. The default type of the invoker is
-     * {@link Invoker.Type.Chain#FULL}.
+     * Get a constructor invoker for the given constructor. Invocations through invokers will bypass
+     * access checks. The default type of the invoker is {@link Invoker.Type.Chain#FULL}.
      *
      * @param constructor The constructor to get the invoker for
      * @param <T>         The type of the constructor
