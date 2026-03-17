@@ -52,7 +52,7 @@ jobs:
       uses: actions/upload-pages-artifact@v3
       with:
         # Upload entire repository
-        path: 'api/build/intermediates/java_doc_dir/release/javaDocReleaseGeneration'
+        path: 'api/build/dokka/javadoc'
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4

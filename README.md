@@ -27,13 +27,14 @@ dependencies {
 
 ## Documentation
 
-- [Javadoc](https://libxposed.github.io/api/) — API reference
 - [Guide](https://github.com/LSPosed/LSPosed/wiki/Develop-Xposed-Modules-Using-Modern-Xposed-API) — Getting started with the modern Xposed API
+- [Javadoc](https://libxposed.github.io/api/) — API reference
 
 ## Related Projects
 
 - [libxposed/helper](https://github.com/libxposed/helper) — Friendly development kit library
 - [libxposed/service](https://github.com/libxposed/service) — Framework communication service
+- [libxposed/example](https://github.com/libxposed/example) - Example module using the modern Xposed API
 
 ## License
 
