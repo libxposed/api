@@ -34,6 +34,8 @@
  * <ul>
  *     <li>{@code staticScope} (boolean) – whether the module scope is fixed and users should not
  *     apply the module on apps outside the scope list</li>
+ *     <li>{@code exceptionMode} (string) [protective|passthrough] - Default to protective, see
+ *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
  * </ul>
  *
  * <h2>Hook Model</h2>
