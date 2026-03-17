@@ -1,7 +1,5 @@
 plugins {
     alias(libs.plugins.agp.lib)
-    alias(libs.plugins.dokka)
-    alias(libs.plugins.dokka.javadoc)
     `maven-publish`
     signing
 }
@@ -37,16 +35,34 @@ dependencies {
     compileOnly(libs.annotation)
 }
 
-dokka {
-    dokkaSourceSets.register("main") {
-        sourceRoots.from(file("src/main/java"))
+val androidJavadoc by tasks.registering(Javadoc::class) {
+    title = "libxposed API $version"
+    source(android.sourceSets["main"].java.srcDirs)
+    destinationDir = layout.buildDirectory.dir("javadoc").get().asFile
+
+    (options as StandardJavadocDocletOptions).apply {
+        links("https://docs.oracle.com/en/java/javase/17/docs/api/")
+        links("https://developer.android.com/reference/")
+        encoding = "UTF-8"
+        charSet = "UTF-8"
+        docEncoding = "UTF-8"
+        addBooleanOption("Xdoclint:all,-missing", true)
+    }
+
+    isFailOnError = false
+
+    val bootCp = project.extensions.getByType<com.android.build.api.variant.LibraryAndroidComponentsExtension>()
+        .sdkComponents.bootClasspath
+
+    doFirst {
+        classpath = files(bootCp.get()) + configurations["releaseCompileClasspath"]
     }
 }
 
-val dokkaJavadocJar by tasks.registering(Jar::class) {
+val javadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
-    dependsOn("dokkaGeneratePublicationJavadoc")
-    from(layout.buildDirectory.dir("dokka/javadoc"))
+    dependsOn(androidJavadoc)
+    from(androidJavadoc.map { it.destinationDir!! })
 }
 
 publishing {
@@ -55,7 +71,7 @@ publishing {
             artifactId = "api"
             group = "io.github.libxposed"
             version = "101.0.0"
-            artifact(dokkaJavadocJar)
+            artifact(javadocJar)
             pom {
                 name.set("api")
                 description.set("Modern Xposed API")
