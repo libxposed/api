@@ -37,6 +37,12 @@ dependencies {
     compileOnly(libs.annotation)
 }
 
+dokka {
+    dokkaSourceSets.register("main") {
+        sourceRoots.from(file("src/main/java"))
+    }
+}
+
 val dokkaJavadocJar by tasks.registering(Jar::class) {
     archiveClassifier.set("javadoc")
     dependsOn("dokkaGeneratePublicationJavadoc")
