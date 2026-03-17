@@ -8,169 +8,139 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.nio.ByteBuffer;
-
-import io.github.libxposed.api.utils.DexParser;
 
 /**
- * Wrap of {@link XposedInterface} used by the modules for the purpose of shielding framework implementation details.
+ * Wrapper of {@link XposedInterface} used by modules to shield framework implementation details.
  */
 public class XposedInterfaceWrapper implements XposedInterface {
 
-    private final XposedInterface mBase;
+    private volatile XposedInterface mBase;
 
-    XposedInterfaceWrapper(@NonNull XposedInterface base) {
+    /**
+     * Attaches the framework interface to the module. Modules should never call this method.
+     *
+     * @param base The framework interface
+     */
+    @SuppressWarnings("unused")
+    public final void attachFramework(@NonNull XposedInterface base) {
+        if (mBase != null) {
+            throw new IllegalStateException("Framework already attached");
+        }
         mBase = base;
+    }
+
+    private void ensureAttached() {
+        if (mBase == null) {
+            throw new IllegalStateException("Framework not attached");
+        }
+    }
+
+    @Override
+    public final int getApiVersion() {
+        ensureAttached();
+        return XposedInterface.super.getApiVersion();
     }
 
     @NonNull
     @Override
     public final String getFrameworkName() {
+        ensureAttached();
         return mBase.getFrameworkName();
     }
 
     @NonNull
     @Override
     public final String getFrameworkVersion() {
+        ensureAttached();
         return mBase.getFrameworkVersion();
     }
 
     @Override
     public final long getFrameworkVersionCode() {
+        ensureAttached();
         return mBase.getFrameworkVersionCode();
     }
 
     @Override
-    public final int getFrameworkPrivilege() {
-        return mBase.getFrameworkPrivilege();
+    public final long getFrameworkProperties() {
+        ensureAttached();
+        return mBase.getFrameworkProperties();
     }
 
     @NonNull
     @Override
-    public final MethodUnhooker<Method> hook(@NonNull Method origin, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, hooker);
+    public final HookBuilder hook(@NonNull Executable origin) {
+        ensureAttached();
+        return mBase.hook(origin);
     }
 
     @NonNull
     @Override
-    public <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hookClassInitializer(origin, hooker);
+    public final HookBuilder hookClassInitializer(@NonNull Class<?> origin) {
+        ensureAttached();
+        return mBase.hookClassInitializer(origin);
+    }
+
+    @Override
+    public final boolean deoptimize(@NonNull Executable executable) {
+        ensureAttached();
+        return mBase.deoptimize(executable);
     }
 
     @NonNull
     @Override
-    public <T> MethodUnhooker<Constructor<T>> hookClassInitializer(@NonNull Class<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hookClassInitializer(origin, priority, hooker);
+    public final Invoker<?, Method> getInvoker(@NonNull Method method) {
+        ensureAttached();
+        return mBase.getInvoker(method);
     }
 
     @NonNull
     @Override
-    public final MethodUnhooker<Method> hook(@NonNull Method origin, int priority, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, priority, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final <T> MethodUnhooker<Constructor<T>> hook(@NonNull Constructor<T> origin, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, hooker);
-    }
-
-    @NonNull
-    @Override
-    public final <T> MethodUnhooker<Constructor<T>> hook(@NonNull Constructor<T> origin, int priority, @NonNull Class<? extends Hooker> hooker) {
-        return mBase.hook(origin, priority, hooker);
+    public final <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor) {
+        ensureAttached();
+        return mBase.getInvoker(constructor);
     }
 
     @Override
-    public final boolean deoptimize(@NonNull Method method) {
-        return mBase.deoptimize(method);
-    }
-
-    @Override
-    public final <T> boolean deoptimize(@NonNull Constructor<T> constructor) {
-        return mBase.deoptimize(constructor);
-    }
-
-    @Nullable
-    @Override
-    public final Object invokeOrigin(@NonNull Method method, @Nullable Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-        return mBase.invokeOrigin(method, thisObject, args);
-    }
-
-    @Override
-    public <T> void invokeOrigin(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-        mBase.invokeOrigin(constructor, thisObject, args);
-    }
-
-    @Nullable
-    @Override
-    public final Object invokeSpecial(@NonNull Method method, @NonNull Object thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-        return mBase.invokeSpecial(method, thisObject, args);
-    }
-
-    @Override
-    public <T> void invokeSpecial(@NonNull Constructor<T> constructor, @NonNull T thisObject, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException {
-        mBase.invokeSpecial(constructor, thisObject, args);
-    }
-
-    @NonNull
-    @Override
-    public final <T> T newInstanceOrigin(@NonNull Constructor<T> constructor, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
-        return mBase.newInstanceOrigin(constructor, args);
-    }
-
-    @NonNull
-    @Override
-    public final <T, U> U newInstanceSpecial(@NonNull Constructor<T> constructor, @NonNull Class<U> subClass, Object... args) throws InvocationTargetException, IllegalArgumentException, IllegalAccessException, InstantiationException {
-        return mBase.newInstanceSpecial(constructor, subClass, args);
+    public final void log(int priority, @Nullable String tag, @NonNull String msg) {
+        ensureAttached();
+        mBase.log(priority, tag, msg);
     }
 
     @Override
     public final void log(int priority, @Nullable String tag, @NonNull String msg, @Nullable Throwable tr) {
+        ensureAttached();
         mBase.log(priority, tag, msg, tr);
-    }
-
-    @Override
-    public final void log(@NonNull String message) {
-        mBase.log(message);
-    }
-
-    @Override
-    public final void log(@NonNull String message, @NonNull Throwable throwable) {
-        mBase.log(message, throwable);
-    }
-
-    @Nullable
-    @Override
-    public final DexParser parseDex(@NonNull ByteBuffer dexData, boolean includeAnnotations) throws IOException {
-        return mBase.parseDex(dexData, includeAnnotations);
     }
 
     @NonNull
     @Override
-    public SharedPreferences getRemotePreferences(@NonNull String name) {
+    public final SharedPreferences getRemotePreferences(@NonNull String name) {
+        ensureAttached();
         return mBase.getRemotePreferences(name);
     }
 
     @NonNull
     @Override
-    public ApplicationInfo getApplicationInfo() {
-        return mBase.getApplicationInfo();
+    public final ApplicationInfo getModuleApplicationInfo() {
+        ensureAttached();
+        return mBase.getModuleApplicationInfo();
     }
 
     @NonNull
     @Override
-    public String[] listRemoteFiles() {
+    public final String[] listRemoteFiles() {
+        ensureAttached();
         return mBase.listRemoteFiles();
     }
 
     @NonNull
     @Override
-    public ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException {
+    public final ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException {
+        ensureAttached();
         return mBase.openRemoteFile(name);
     }
 }

@@ -11,7 +11,7 @@ android {
     androidResources.enable = false
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 26
         consumerProguardFiles("proguard-rules.pro")
     }
 
@@ -20,8 +20,8 @@ android {
     }
 
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_1_8
-        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_21
     }
 
     publishing {
@@ -32,12 +32,17 @@ android {
     }
 }
 
+dependencies {
+    compileOnly(libs.annotation)
+    compileOnly(libs.kotlin.stdlib)
+}
+
 publishing {
     publications {
         register<MavenPublication>("api") {
             artifactId = "api"
             group = "io.github.libxposed"
-            version = "100"
+            version = "101.0.0"
             pom {
                 name.set("api")
                 description.set("Modern Xposed API")
@@ -88,10 +93,4 @@ signing {
         useInMemoryPgpKeys(signingKey, signingPassword)
         sign(publishing.publications)
     }
-}
-
-
-dependencies {
-    compileOnly(libs.annotation)
-    lintPublish(project(":checks"))
 }
