@@ -9,15 +9,19 @@ Modern Xposed Module API — a type-safe, redesigned replacement for the legacy 
 
 ## Integration
 
-```groovy
-dependencies {
-    compileOnly "io.github.libxposed:api:101.0.0"
-}
-```
+### For Module Developers
 
 ```kotlin
 dependencies {
     compileOnly("io.github.libxposed:api:101.0.0")
+}
+```
+
+### For Framework Developers
+
+```kotlin
+dependencies {
+    implementation("io.github.libxposed:api:101.0.0")
 }
 ```
 
