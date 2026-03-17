@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.agp.lib)
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.dokka.javadoc)
     `maven-publish`
     signing
 }
@@ -27,14 +29,18 @@ android {
     publishing {
         singleVariant("release") {
             withSourcesJar()
-            withJavadocJar()
         }
     }
 }
 
 dependencies {
     compileOnly(libs.annotation)
-    compileOnly(libs.kotlin.stdlib)
+}
+
+val dokkaJavadocJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+    dependsOn("dokkaGeneratePublicationJavadoc")
+    from(layout.buildDirectory.dir("dokka/javadoc"))
 }
 
 publishing {
@@ -43,6 +49,7 @@ publishing {
             artifactId = "api"
             group = "io.github.libxposed"
             version = "101.0.0"
+            artifact(dokkaJavadocJar)
             pom {
                 name.set("api")
                 description.set("Modern Xposed API")

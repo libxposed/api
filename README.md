@@ -27,8 +27,8 @@ dependencies {
 
 ## Documentation
 
+- [Javadoc](https://libxposed.github.io/api/) — API reference
 - [Guide](https://github.com/LSPosed/LSPosed/wiki/Develop-Xposed-Modules-Using-Modern-Xposed-API) — Getting started with the modern Xposed API
-- [Javadoc](api/src/main/java/io/github/libxposed/api/package-info.java) — Package-level API overview
 
 ## Related Projects
 
