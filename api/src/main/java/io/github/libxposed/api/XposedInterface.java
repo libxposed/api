@@ -266,6 +266,12 @@ public interface XposedInterface {
          * Cancels the hook. This method is idempotent. It is safe to call this method multiple times.
          */
         void unhook();
+
+        /**
+         * Gets the unique id of the hook, or null if the hook is not assigned with an id.
+         */
+        @Nullable
+        String getId();
     }
 
     /**
@@ -331,6 +337,16 @@ public interface XposedInterface {
          */
         @NonNull
         HookHandle intercept(@NonNull Hooker hooker);
+
+        /**
+         * Sets a unique id for the hook, default to {@code null}. An id is used for exclusively identifying
+         * a hook on the executable. A new hook with the same id on the executable will replace the old one
+         * atomically, and the old hook handle will be invalid.
+         *
+         * @param id The id for the hook. It can be null if you don't care about replacing the hook later.
+         * @return The builder itself for chaining
+         */
+        HookBuilder setId(@Nullable String id);
     }
 
     /**

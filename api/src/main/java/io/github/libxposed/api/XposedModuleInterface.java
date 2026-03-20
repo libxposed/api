@@ -3,9 +3,13 @@ package io.github.libxposed.api;
 import android.app.AppComponentFactory;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
+import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+
+import java.util.List;
 
 /**
  * Interface for module initialization.
@@ -99,6 +103,52 @@ public interface XposedModuleInterface {
     }
 
     /**
+     * Wraps information about the hot reloading event.
+     */
+    interface HotReloadingParam {
+        /**
+         * Gets the data passed from the module app when triggering hot reload. This can be null if the
+         * app passes {@code null} or the hot reload is triggered by app updating.
+         */
+        @Nullable
+        Bundle getData();
+
+        /**
+         * Sets the data to be passed to the new code after hot reloading. This can be retrieved in {@link #onHotReloaded(HotReloadedParam)}.
+         * Be careful that you should <b>NEVER</b> put an object that is not created under the system or app classloaders. If needed, you
+         * should use {@link Bundle} to serialize the data.
+         * @param outState The data to be passed to the new code after hot reloading
+         */
+        void setSavedInstanceState(@Nullable Object outState);
+    }
+
+    /**
+     * Wraps information about the hot reloaded event.
+     */
+    interface HotReloadedParam extends ModuleLoadedParam {
+        /**
+         * Gets the data passed from the module app when triggering hot reload. This can be null if the
+         * app passes {@code null} or the hot reload is triggered by app updating.
+         */
+        @Nullable
+        Bundle getData();
+
+        /**
+         * Gets the data set in {@link HotReloadingParam#setSavedInstanceState(Object)}.
+         * This can be {@code null} if no data is set.
+         */
+        @Nullable
+        Object getSavedInstanceState();
+
+        /**
+         * Gets a list of hook handles created by the old code. The new code can choose to remove or
+         * atomically replace these hooks with new ones.
+         */
+        @NonNull
+        List<XposedInterface.HookHandle> getOldHookHandles();
+    }
+
+    /**
      * Gets notified when the module is loaded into the target process.<br/>
      * This callback is guaranteed to be called exactly once for a process.
      *
@@ -140,5 +190,25 @@ public interface XposedModuleInterface {
      * @param param Information about system server
      */
     default void onSystemServerStarting(@NonNull SystemServerStartingParam param) {
+    }
+
+    /**
+     * Gets notified when the module is about to be reloaded. This callback is called when hot
+     * reloading is triggered by the module itself or app updating if {@code autoHotReload} is set to true in {@code module.prop}.
+     * <p>This callback runs in <b>old</b> code.</p>
+     * @param param Information about the hot reloading event
+     * @return {@code true} to allow hot reloading to proceed, {@code false} to cancel hot reloading
+     */
+    default boolean onHotReloading(@NonNull HotReloadingParam param) {
+        return false;
+    }
+
+    /**
+     * Gets notified when the module has been reloaded.
+     * <p>This callback runs in <b>new</b> code.</p>
+     * @param param Information about the hot reloaded event
+     */
+    default void onHotReloaded(@NonNull HotReloadedParam param) {
+        param.getOldHookHandles().forEach(XposedInterface.HookHandle::unhook);
     }
 }
