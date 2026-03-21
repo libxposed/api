@@ -200,7 +200,7 @@ public interface XposedModuleInterface {
      * @return {@code true} to allow hot reloading to proceed, {@code false} to cancel hot reloading
      */
     default boolean onHotReloading(@NonNull HotReloadingParam param) {
-        return false;
+        return true;
     }
 
     /**
@@ -210,5 +210,6 @@ public interface XposedModuleInterface {
      */
     default void onHotReloaded(@NonNull HotReloadedParam param) {
         param.getOldHookHandles().forEach(XposedInterface.HookHandle::unhook);
+        onModuleLoaded(param);
     }
 }
