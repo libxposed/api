@@ -111,6 +111,9 @@ public interface XposedModuleInterface {
      * Gets notified when a package is loaded into the app process. This is the time when the default
      * classloader is ready but before the instantiation of custom {@link android.app.AppComponentFactory}.<br/>
      * This callback could be invoked multiple times for the same process on each package.
+     * <p>Split apks may cause multiple packages with the same name to be loaded if {@code isolatedSplits="true"}
+     * is specified in the app's manifest. In this case, the callback will be called multiple times because
+     * {@link PackageLoadedParam#getDefaultClassLoader()} is different.</p>
      *
      * @param param Information about the package being loaded
      */
@@ -122,6 +125,9 @@ public interface XposedModuleInterface {
      * Gets notified when custom {@link android.app.AppComponentFactory} has instantiated the app
      * classloader and is ready to create {@link android.app.Activity} and {@link android.app.Service}.<br/>
      * This callback could be invoked multiple times for the same process on each package.
+     * <p>Split apks may cause multiple packages with the same name to be loaded if {@code isolatedSplits="true"}
+     * is specified in the app's manifest. In this case, the callback will be called multiple times because
+     * {@link PackageReadyParam#getAppComponentFactory()} and {@link PackageReadyParam#getClassLoader()} are different.</p>
      *
      * @param param Information about the package being loaded
      */
