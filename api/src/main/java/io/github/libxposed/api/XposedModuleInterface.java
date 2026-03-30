@@ -1,6 +1,7 @@
 package io.github.libxposed.api;
 
 import android.app.AppComponentFactory;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Build;
 
@@ -55,7 +56,7 @@ public interface XposedModuleInterface {
         ApplicationInfo getApplicationInfo();
 
         /**
-         * Returns whether this is the first and main package loaded in the app process.
+         * Returns whether this is the first and main package loaded in the process.
          *
          * @return {@code true} if this is the first package.
          */
@@ -63,7 +64,7 @@ public interface XposedModuleInterface {
 
         /**
          * Gets the default classloader of the current package. This is the classloader that loads
-         * the app's code, resources and custom {@link AppComponentFactory}.
+         * the package's code, resources and custom {@link AppComponentFactory}.
          */
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
@@ -76,8 +77,9 @@ public interface XposedModuleInterface {
      */
     interface PackageReadyParam extends PackageLoadedParam {
         /**
-         * Gets the classloader of the current package. It may be different from {@link #getDefaultClassLoader()}
-         * if the package has a custom {@link AppComponentFactory} that creates a different classloader.
+         * Gets the classloader of the current package. It may be different from
+         * {@link #getDefaultClassLoader()} if the package has a custom {@link AppComponentFactory}
+         * that creates a different classloader.
          */
         @NonNull
         ClassLoader getClassLoader();
@@ -107,41 +109,57 @@ public interface XposedModuleInterface {
      * This callback is guaranteed to be called exactly once for a process.
      *
      * @param param Information about the process in which the module is loaded
-     * @throws Throwable Everything the callback throws is caught and logged.
+     * @throws RuntimeException Everything the callback throws is caught and logged.
      */
     default void onModuleLoaded(@NonNull ModuleLoadedParam param) {
     }
 
     /**
-     * Gets notified when a package is loaded into the app process. This is the time when the default
-     * classloader is ready but before the instantiation of {@link AppComponentFactory}.<br/>
-     * This callback could be invoked multiple times for the same process on each package,
-     * but only be invoked once per package.
+     * Gets notified when a {@link android.R.attr#hasCode} package is loaded into the process.
+     * This is the time when the default classloader is ready but before the instantiation of
+     * {@link AppComponentFactory}.
+     * <p>
+     * This callback is invoked only once for each package name loaded into the process,
+     * note that a process may load multiple packages, such as {@link android.R.attr#sharedUserId}
+     * and {@link Context#createPackageContext(String, int)} with {@link Context#CONTEXT_INCLUDE_CODE}.
+     * <p>
+     * In system server, the first callback is replaced by
+     * {@link #onSystemServerStarting(SystemServerStartingParam)}, so
+     * {@code param.isFirstPackage()} is never {@code true} here.
      *
      * @param param Information about the package being loaded
-     * @throws Throwable Everything the callback throws is caught and logged.
+     * @throws RuntimeException Everything the callback throws is caught and logged.
      */
     @RequiresApi(Build.VERSION_CODES.Q)
     default void onPackageLoaded(@NonNull PackageLoadedParam param) {
     }
 
     /**
-     * Gets notified when {@link AppComponentFactory} has instantiated the app
-     * classloader and is ready to create {@link android.app.Application}.<br/>
-     * This callback could be invoked multiple times for the same process on each package,
-     * but only be invoked once per package.
+     * Gets notified when {@link AppComponentFactory} has instantiated the classloader
+     * and is ready to create {@link android.app.Application}.
+     * <p>
+     * This callback is invoked only once for each package name loaded into the process,
+     * note that a process may load multiple packages, such as {@link android.R.attr#sharedUserId}
+     * and {@link Context#createPackageContext(String, int)} with {@link Context#CONTEXT_INCLUDE_CODE}.
+     * <p>
+     * In system server, the first callback is replaced by
+     * {@link #onSystemServerStarting(SystemServerStartingParam)}, so
+     * {@code param.isFirstPackage()} is never {@code true} here.
      *
      * @param param Information about the package being loaded
-     * @throws Throwable Everything the callback throws is caught and logged.
+     * @throws RuntimeException Everything the callback throws is caught and logged.
      */
     default void onPackageReady(@NonNull PackageReadyParam param) {
     }
 
     /**
      * Gets notified when system server is ready to start critical services.
+     * In system server, this callback replaces the first callback phase of
+     * {@link #onPackageLoaded(PackageLoadedParam)} and
+     * {@link #onPackageReady(PackageReadyParam)}.
      *
      * @param param Information about system server
-     * @throws Throwable Everything the callback throws is caught and logged.
+     * @throws RuntimeException Everything the callback throws is caught and logged.
      */
     default void onSystemServerStarting(@NonNull SystemServerStartingParam param) {
     }
