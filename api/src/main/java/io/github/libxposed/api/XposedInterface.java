@@ -22,10 +22,23 @@ import io.github.libxposed.api.error.HookFailedError;
 @SuppressWarnings("unused")
 public interface XposedInterface {
     /**
+     * Behavior changes: all modules
+     * <ul>
+     * <li> Modules cannot be injected into zygote;
+     * they are only loaded within the process of the scope.</li>
+     * </ul>
+     * Behavior changes: Modules targeting 101 or higher
+     * <ul>
+     * <li>This is the first API version.</li>
+     * </ul>
+     */
+    int API_101 = 101;
+
+    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = 101;
+    int LIB_API = API_101;
 
     /**
      * The framework has the capability to hook system_server and other system processes.
