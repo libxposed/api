@@ -38,6 +38,27 @@
  *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
  * </ul>
  *
+ * <h2>Scope</h2>
+ *
+ * <p>Module scope is defined by a list of package names in {@code META-INF/xposed/scope.list}.
+ * The framework injects the module into all regular processes declared by those packages.
+ * After injection, every loaded package in that process will trigger callbacks.
+ * As a result, modules may receive callbacks beyond the originally scoped packages, so they
+ * should always filter by process name and package name.</p>
+ *
+ * <p>A special case applies to components declared with {@code android:process="system"} in a
+ * {@code android:sharedUserId="android.uid.system"} package: they run in system server.
+ * For packages whose components all run in system server, adding the package name itself to the
+ * scope has no effect. Instead, system server is represented by the special virtual package name
+ * {@code system}, which should be used explicitly. </p>
+ *
+ * <p>Note that {@code android} package is still a valid scope target because some of its
+ * components declare {@code android:process=":ui"} and therefore do not run in system server.
+ * Modules scoped to {@code android} can still receive events for {@code android} package loading
+ * even though {@code android} package has no code. By contrast, {@code com.android.providers.settings}
+ * is not a valid scope target, modules should use the {@code system} scope and then wait
+ * for the {@code com.android.providers.settings} package loading event.</p>
+ *
  * <h2>Hook Model</h2>
  *
  * <p>The API uses an <b>interceptor-chain</b> model (similar to OkHttp interceptors). Modules
@@ -80,7 +101,8 @@
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onPackageReady(XposedModuleInterface.PackageReadyParam)
  *     onPackageReady()} – called after the app classloader is created.</li>
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onSystemServerStarting(XposedModuleInterface.SystemServerStartingParam)
- *     onSystemServerStarting()} – called when system server is starting.</li>
+ *     onSystemServerStarting()} – called once when system server is starting. This callback
+ *     replaces the first package load phase.</li>
  * </ul>
  *
  * <h2>Error Handling</h2>
