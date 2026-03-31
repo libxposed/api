@@ -13,7 +13,7 @@ Modern Xposed Module API — a type-safe, redesigned replacement for the legacy 
 
 ```kotlin
 dependencies {
-    compileOnly("io.github.libxposed:api:101.0.0")
+    compileOnly("io.github.libxposed:api:101.0.1")
 }
 ```
 
@@ -21,7 +21,7 @@ dependencies {
 
 ```kotlin
 dependencies {
-    implementation("io.github.libxposed:api:101.0.0")
+    implementation("io.github.libxposed:api:101.0.1")
 }
 ```
 

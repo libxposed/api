@@ -71,7 +71,7 @@ publishing {
         register<MavenPublication>("api") {
             artifactId = "api"
             group = "io.github.libxposed"
-            version = "101.0.0"
+            version = "101.0.1"
             artifact(javadocJar)
             pom {
                 name.set("api")
