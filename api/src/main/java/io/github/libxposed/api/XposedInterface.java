@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import io.github.libxposed.api.error.HookFailedError;
+import io.github.libxposed.annotation.SinceApi;
 
 /**
  * Xposed interface for modules to operate on application processes.
@@ -295,6 +296,7 @@ public interface XposedInterface {
         /**
          * Gets the unique id of the hook, or null if the hook is not assigned with an id.
          */
+        @SinceApi(API_102)
         @Nullable
         String getId();
 
@@ -317,6 +319,7 @@ public interface XposedInterface {
          * @throws IllegalStateException    if this hook handle is no longer valid
          * @throws HookFailedError          if replacement fails due to framework internal error
          */
+        @SinceApi(API_102)
         @NonNull
         HookHandle replaceHook(@NonNull Hooker hooker);
     }
@@ -397,6 +400,7 @@ public interface XposedInterface {
          * @param id The id for the hook. It can be null if you don't care about replacing the hook later.
          * @return The builder itself for chaining
          */
+        @SinceApi(API_102)
         HookBuilder setId(@Nullable String id);
     }
 

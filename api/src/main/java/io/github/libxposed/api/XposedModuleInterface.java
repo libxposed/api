@@ -12,6 +12,8 @@ import androidx.annotation.RequiresApi;
 
 import java.util.List;
 
+import io.github.libxposed.annotation.SinceApi;
+
 /**
  * Interface for module initialization.
  */
@@ -111,6 +113,7 @@ public interface XposedModuleInterface {
     /**
      * Wraps information about the hot reloading event.
      */
+    @SinceApi(XposedInterface.API_102)
     interface HotReloadingParam {
         /**
          * Gets the data passed from the module app when triggering hot reload through the service.
@@ -134,6 +137,7 @@ public interface XposedModuleInterface {
     /**
      * Wraps information about the hot reloaded event.
      */
+    @SinceApi(XposedInterface.API_102)
     interface HotReloadedParam extends ModuleLoadedParam {
         /**
          * Gets the data passed from the module app when triggering hot reload. This can be null if the
@@ -232,6 +236,7 @@ public interface XposedModuleInterface {
      * @param param Information about the hot reloading event
      * @return {@code true} to allow hot reloading to proceed, {@code false} to cancel hot reloading
      */
+    @SinceApi(XposedInterface.API_102)
     default boolean onHotReloading(@NonNull HotReloadingParam param) {
         return false;
     }
@@ -246,6 +251,7 @@ public interface XposedModuleInterface {
      *
      * @param param Information about the hot reloaded event
      */
+    @SinceApi(XposedInterface.API_102)
     default void onHotReloaded(@NonNull HotReloadedParam param) {
         param.getOldHookHandles().forEach(XposedInterface.HookHandle::unhook);
         onModuleLoaded(param);

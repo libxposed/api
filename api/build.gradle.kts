@@ -33,7 +33,9 @@ android {
 }
 
 dependencies {
-    compileOnly(libs.annotation)
+    compileOnly(libs.androidx.annotation)
+    compileOnly(libs.libxposed.annotation)
+    lintPublish(libs.libxposed.lint)
 }
 
 val androidJavadoc by tasks.registering(Javadoc::class) {
@@ -71,7 +73,7 @@ publishing {
         register<MavenPublication>("api") {
             artifactId = "api"
             group = "io.github.libxposed"
-            version = "101.0.1"
+            version = "102.0.0"
             artifact(javadocJar)
             pom {
                 name.set("api")
