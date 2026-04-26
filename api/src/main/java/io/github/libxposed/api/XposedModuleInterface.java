@@ -232,5 +232,6 @@ public interface XposedModuleInterface {
      */
     default void onHotReloaded(@NonNull HotReloadedParam param) {
         param.getOldHookHandles().forEach(XposedInterface.HookHandle::unhook);
+        onModuleLoaded(param);
     }
 }
