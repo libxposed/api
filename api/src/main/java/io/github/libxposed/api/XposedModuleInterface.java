@@ -113,16 +113,19 @@ public interface XposedModuleInterface {
      */
     interface HotReloadingParam {
         /**
-         * Gets the data passed from the module app when triggering hot reload. This can be null if the
-         * app passes {@code null} or the hot reload is triggered by app updating.
+         * Gets the data passed from the module app when triggering hot reload through the service.
+         * This can be null if the app passes {@code null} or the hot reload is triggered by app updating.
          */
         @Nullable
         Bundle getData();
 
         /**
          * Sets the data to be passed to the new code after hot reloading. This can be retrieved in {@link #onHotReloaded(HotReloadedParam)}.
-         * Be careful that you should <b>NEVER</b> put an object that is not created under the system or app classloaders. If needed, you
-         * should use {@link Bundle} to serialize the data.
+         * Objects created under the system, system server, or app classloaders can be used. Be careful
+         * that you should <b>NEVER</b> put an object that is created under the old module classloader, or
+         * the old code may remain strongly reachable after hot reloading. If needed, you should use
+         * {@link Bundle} to serialize the data.
+         *
          * @param outState The data to be passed to the new code after hot reloading
          */
         void setSavedInstanceState(@Nullable Object outState);
@@ -148,15 +151,20 @@ public interface XposedModuleInterface {
 
         /**
          * Gets a list of hook handles created by the old code. The new code can choose to remove or
-         * atomically replace these hooks with new ones.
+         * atomically replace these hooks with new ones through
+         * {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}.
          */
         @NonNull
         List<XposedInterface.HookHandle> getOldHookHandles();
     }
 
     /**
-     * Gets notified when the module is loaded into the target process.<br/>
-     * This callback is guaranteed to be called exactly once for a process.
+     * Gets notified when a module generation is loaded into the target process.
+     * <p>
+     * This callback is called for the initial module load. The default implementation of
+     * {@link #onHotReloaded(HotReloadedParam)} also delegates to this method for the new generation
+     * after unhooking old hooks. Modules that need reload-specific behavior should override
+     * {@link #onHotReloaded(HotReloadedParam)}.
      *
      * @param param Information about the process in which the module is loaded
      * @throws RuntimeException Everything the callback throws is caught and logged.
@@ -216,8 +224,11 @@ public interface XposedModuleInterface {
 
     /**
      * Gets notified when the module is about to be reloaded. This callback is called when hot
-     * reloading is triggered by the module itself or app updating if {@code autoHotReload} is set to true in {@code module.prop}.
+     * reloading is triggered through the service, or by app updating if {@code autoHotReload} is set
+     * to true in {@code module.prop}. App-update hot reloading still proceeds only if this callback
+     * returns {@code true}.
      * <p>This callback runs in <b>old</b> code.</p>
+     *
      * @param param Information about the hot reloading event
      * @return {@code true} to allow hot reloading to proceed, {@code false} to cancel hot reloading
      */
@@ -228,6 +239,11 @@ public interface XposedModuleInterface {
     /**
      * Gets notified when the module has been reloaded.
      * <p>This callback runs in <b>new</b> code.</p>
+     * <p>The default implementation unhooks all old hooks and then calls
+     * {@link #onModuleLoaded(ModuleLoadedParam)}. Override this method to atomically replace old
+     * hooks through {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}, remove
+     * hooks that should not survive, or perform reload-specific initialization.</p>
+     *
      * @param param Information about the hot reloaded event
      */
     default void onHotReloaded(@NonNull HotReloadedParam param) {

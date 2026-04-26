@@ -22,12 +22,13 @@ import io.github.libxposed.api.error.HookFailedError;
 @SuppressWarnings("unused")
 public interface XposedInterface {
     /**
-     * Behavior changes: all modules
+     * API version 101.
+     * <p>Behavior changes: all modules</p>
      * <ul>
-     * <li> Modules cannot be injected into zygote;
+     * <li>Modules cannot be injected into zygote;
      * they are only loaded within the process of the scope.</li>
      * </ul>
-     * Behavior changes: Modules targeting 101 or higher
+     * <p>Behavior changes: Modules targeting 101 or higher</p>
      * <ul>
      * <li>This is the first API version.</li>
      * </ul>
@@ -35,10 +36,21 @@ public interface XposedInterface {
     int API_101 = 101;
 
     /**
+     * API version 102.
+     * <p>Behavior changes: Modules targeting 102 or higher</p>
+     * <ul>
+     * <li>Hot reloading callbacks are available.</li>
+     * <li>Hooks can be assigned an id. Hook ids are scoped to the current module and executable.</li>
+     * <li>Hooks can be atomically replaced through {@link HookHandle#replaceHook(Hooker)}.</li>
+     * </ul>
+     */
+    int API_102 = 102;
+
+    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = API_101;
+    int LIB_API = API_102;
 
     /**
      * The framework has the capability to hook system_server and other system processes.
@@ -285,6 +297,28 @@ public interface XposedInterface {
          */
         @Nullable
         String getId();
+
+        /**
+         * Atomically replaces this hook with a new hooker and returns the new hook handle.
+         * <p>
+         * The replacement keeps the executable, priority, exception handling mode, and id of this hook.
+         * For a hook with an id, this targets the same hook as creating a new hook on the same executable
+         * with the same id. This method is the handle-based form of replacement and can also replace a
+         * hook without an id. It is useful during hot reloading when new code receives old hook handles
+         * from {@link XposedModuleInterface.HotReloadedParam#getOldHookHandles()}. After a successful
+         * replacement, this handle is no longer valid.
+         * </p>
+         * <p>The hook chain is snapshot based. Replacing a hook while a call is running does not affect
+         * that in-flight call.</p>
+         *
+         * @param hooker The new hooker object
+         * @return The new handle for the replaced hook
+         * @throws IllegalArgumentException if hooker is invalid
+         * @throws IllegalStateException    if this hook handle is no longer valid
+         * @throws HookFailedError          if replacement fails due to framework internal error
+         */
+        @NonNull
+        HookHandle replaceHook(@NonNull Hooker hooker);
     }
 
     /**
@@ -353,8 +387,12 @@ public interface XposedInterface {
 
         /**
          * Sets a unique id for the hook, default to {@code null}. An id is used for exclusively identifying
-         * a hook on the executable. A new hook with the same id on the executable will replace the old one
-         * atomically, and the old hook handle will be invalid.
+         * a hook in the same module on the executable. A new hook with the same id in the same module on
+         * the executable will replace the old one atomically, and the old hook handle will be invalid.
+         * Hook ids are isolated between modules.
+         *
+         * <p>The hook chain is snapshot based. Replacing or adding a hook while a call is running does not
+         * affect that in-flight call.</p>
          *
          * @param id The id for the hook. It can be null if you don't care about replacing the hook later.
          * @return The builder itself for chaining
