@@ -37,7 +37,8 @@
  *     <li>{@code exceptionMode} (string) [protective|passthrough] - Default to protective, see
  *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
  *     <li>{@code autoHotReload} (boolean) - whether app updates should automatically trigger hot
- *     reloading. Hot reloading still proceeds only when
+ *     reloading. Hot reloading is supported only for modules that declare exactly one Java entry
+ *     class, and still proceeds only when
  *     {@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
  *     onHotReloading()} returns {@code true}.</li>
  * </ul>
@@ -108,9 +109,12 @@
  *     onSystemServerStarting()} – called once when system server is starting. This callback
  *     replaces the first package load phase.</li>
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
- *     onHotReloading()} - called in old code before hot reloading proceeds.</li>
+ *     onHotReloading()} - called in old code before hot reloading proceeds. Hot reloading is
+ *     supported only for modules that declare exactly one Java entry class.</li>
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloaded(XposedModuleInterface.HotReloadedParam)
- *     onHotReloaded()} - called in new code after hot reloading completes.</li>
+ *     onHotReloaded()} - called in new code after hot reloading completes. Package lifecycle
+ *     callbacks are not automatically replayed; modules that opt into hot reload should install or
+ *     replace their hooks explicitly from this callback.</li>
  * </ul>
  *
  * <h2>Error Handling</h2>

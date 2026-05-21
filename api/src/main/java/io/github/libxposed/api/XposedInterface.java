@@ -40,7 +40,7 @@ public interface XposedInterface {
      * API version 102.
      * <p>Behavior changes: Modules targeting 102 or higher</p>
      * <ul>
-     * <li>Hot reloading callbacks are available.</li>
+     * <li>Hot reloading callbacks are available for modules that declare exactly one Java entry class.</li>
      * <li>Hooks can be assigned an id. Hook ids are scoped to the current module and executable.</li>
      * <li>Hooks can be atomically replaced through {@link HookHandle#replaceHook(Hooker)}.</li>
      * </ul>
@@ -65,6 +65,11 @@ public interface XposedInterface {
      * The framework disallows accessing Xposed API via reflection or dynamically loaded code.
      */
     long PROP_RT_API_PROTECTION = 1L << 2;
+
+    /**
+     * The framework currently permits hot reload through the service.
+     */
+    long PROP_RT_HOT_RELOAD = 1L << 3;
 
     /**
      * The default hook priority.

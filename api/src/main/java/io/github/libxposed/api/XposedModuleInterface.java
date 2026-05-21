@@ -112,15 +112,21 @@ public interface XposedModuleInterface {
 
     /**
      * Wraps information about the hot reloading event.
+     * <p>
+     * Hot reloading is supported only for modules that declare exactly one Java entry class.
+     * Modules with multiple Java entry classes are rejected before hot reload callbacks are invoked.
+     * </p>
      */
     @SinceApi(XposedInterface.API_102)
     interface HotReloadingParam {
         /**
          * Gets the data passed from the module app when triggering hot reload through the service.
          * This can be null if the app passes {@code null} or the hot reload is triggered by app updating.
+         * The bundle should contain only values that can be unmarshalled without the module's class
+         * loader, such as primitive values, strings, arrays, and framework {@link Bundle} instances.
          */
         @Nullable
-        Bundle getData();
+        Bundle getExtras();
 
         /**
          * Sets the data to be passed to the new code after hot reloading. This can be retrieved in {@link #onHotReloaded(HotReloadedParam)}.
@@ -144,7 +150,7 @@ public interface XposedModuleInterface {
          * app passes {@code null} or the hot reload is triggered by app updating.
          */
         @Nullable
-        Bundle getData();
+        Bundle getExtras();
 
         /**
          * Gets the data set in {@link HotReloadingParam#setSavedInstanceState(Object)}.
@@ -154,8 +160,8 @@ public interface XposedModuleInterface {
         Object getSavedInstanceState();
 
         /**
-         * Gets a list of hook handles created by the old code. The new code can choose to remove or
-         * atomically replace these hooks with new ones through
+         * Gets a list of hook handles created by the previous generation of this module. The new
+         * code can choose to remove or atomically replace these hooks with new ones through
          * {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}.
          */
         @NonNull
@@ -165,10 +171,9 @@ public interface XposedModuleInterface {
     /**
      * Gets notified when a module generation is loaded into the target process.
      * <p>
-     * This callback is called for the initial module load. The default implementation of
-     * {@link #onHotReloaded(HotReloadedParam)} also delegates to this method for the new generation
-     * after unhooking old hooks. Modules that need reload-specific behavior should override
-     * {@link #onHotReloaded(HotReloadedParam)}.
+     * This callback is called for the initial module load. Hot reload does not automatically replay
+     * this callback or package lifecycle callbacks; modules that opt into hot reload should override
+     * {@link #onHotReloaded(HotReloadedParam)} and explicitly install or replace the hooks they need.
      *
      * @param param Information about the process in which the module is loaded
      * @throws RuntimeException Everything the callback throws is caught and logged.
@@ -232,6 +237,15 @@ public interface XposedModuleInterface {
      * to true in {@code module.prop}. App-update hot reloading still proceeds only if this callback
      * returns {@code true}.
      * <p>This callback runs in <b>old</b> code.</p>
+     * <p>
+     * Hot reloading is supported only for modules that declare exactly one Java entry class.
+     * Modules with multiple Java entry classes are rejected before this callback is invoked.
+     * </p>
+     * <p>
+     * Hot reloads are serialized per target. Before the old hook handle list is captured, the
+     * framework freezes old code so further hook registrations from old code fail. In-flight hook
+     * calls keep using the hook chain snapshot that was active when they started.
+     * </p>
      *
      * @param param Information about the hot reloading event
      * @return {@code true} to allow hot reloading to proceed, {@code false} to cancel hot reloading
@@ -244,16 +258,22 @@ public interface XposedModuleInterface {
     /**
      * Gets notified when the module has been reloaded.
      * <p>This callback runs in <b>new</b> code.</p>
-     * <p>The default implementation unhooks all old hooks and then calls
-     * {@link #onModuleLoaded(ModuleLoadedParam)}. Override this method to atomically replace old
-     * hooks through {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}, remove
-     * hooks that should not survive, or perform reload-specific initialization.</p>
+     * <p>
+     * Hot reloading is supported only for modules that declare exactly one Java entry class.
+     * Modules with multiple Java entry classes are rejected before hot reload callbacks are invoked.
+     * </p>
+     * <p>
+     * Package lifecycle callbacks are not automatically replayed after hot reload. Override this
+     * method to atomically replace old hooks through
+     * {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}, remove hooks that
+     * should not survive, or perform reload-specific initialization. The default implementation
+     * only unhooks all old hooks.
+     * </p>
      *
      * @param param Information about the hot reloaded event
      */
     @SinceApi(XposedInterface.API_102)
     default void onHotReloaded(@NonNull HotReloadedParam param) {
         param.getOldHookHandles().forEach(XposedInterface.HookHandle::unhook);
-        onModuleLoaded(param);
     }
 }
