@@ -40,7 +40,7 @@ dependencies {
 
 val androidJavadoc by tasks.registering(Javadoc::class) {
     title = "libxposed API $version"
-    source(android.sourceSets["main"].java.srcDirs)
+    source(layout.projectDirectory.dir("src/main/java"))
     destinationDir = layout.buildDirectory.dir("javadoc").get().asFile
 
     (options as StandardJavadocDocletOptions).apply {
