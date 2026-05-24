@@ -1,10 +1,10 @@
 [versions]
 agp = "9.2.1"
+libxposed-annotation = "1.0.0"
+libxposed-lint = "1.0.0"
 
 [plugins]
 agp-lib = { id = "com.android.library", version.ref = "agp" }
 
 [libraries]
 androidx-annotation = { module = "androidx.annotation:annotation", version = "1.10.0" }
-libxposed-annotation = { module = "io.github.libxposed:annotation", version = "1.0.0" }
-libxposed-lint = { module = "io.github.libxposed:lint", version = "1.0.0" }
