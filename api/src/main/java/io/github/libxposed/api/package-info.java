@@ -8,10 +8,15 @@
  * <h2>Getting Started</h2>
  *
  * <p>Module entry classes should extend {@link io.github.libxposed.api.XposedModule}. The
- * framework calls {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework
- * attachFramework()} automatically; modules <b>should not</b> perform initialization work before
+ * framework calls the internal
+ * {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework attachFramework()}
+ * bridge automatically; modules <b>must not</b> call it and <b>should not</b>
+ * perform initialization work before
  * {@link io.github.libxposed.api.XposedModuleInterface#onModuleLoaded(XposedModuleInterface.ModuleLoadedParam)
  * onModuleLoaded()} is called.</p>
+ *
+ * <p>Modules targeting Xposed API 102 or higher must use the modern libxposed API directly and
+ * must not call legacy {@code de.robv.android.xposed} APIs.</p>
  *
  * <h2>Entry Registration</h2>
  *
@@ -36,7 +41,7 @@
  *     apply the module on apps outside the scope list</li>
  *     <li>{@code exceptionMode} (string) [protective|passthrough] - Default to protective, see
  *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
- *     <li>{@code autoHotReload} (boolean) - whether app updates should automatically trigger hot
+ *     <li>{@code autoHotReload} (boolean, API 102+) - whether app updates should automatically trigger hot
  *     reloading. Hot reloading is supported only for modules that declare exactly one Java entry
  *     class, and still proceeds only when
  *     {@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
@@ -84,6 +89,14 @@
  *     });
  * }</pre>
  *
+ * <p>Since API 102, hooks may be assigned an optional id through
+ * {@link io.github.libxposed.api.XposedInterface.HookBuilder#setId(String) setId(String)}.
+ * A hook id is scoped to the current module and executable. Installing another hook with the same
+ * id replaces the old hook atomically, and
+ * {@link io.github.libxposed.api.XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)
+ * replaceHook(Hooker)} can atomically replace an existing hook handle while preserving its
+ * executable, priority, exception handling mode, and id.</p>
+ *
  * <h2>Invoker System</h2>
  *
  * <p>To call the original (or hooked) method bypassing access checks, obtain an
@@ -116,6 +129,11 @@
  *     callbacks are not automatically replayed; modules that opt into hot reload should install or
  *     replace their hooks explicitly from this callback.</li>
  * </ul>
+ *
+ * <p>Since API 102, an entry can call
+ * {@link io.github.libxposed.api.XposedInterfaceWrapper#detach() detach()} after it no longer
+ * needs lifecycle callbacks. This stops subsequent lifecycle callbacks only for the current entry;
+ * hooks and other {@link io.github.libxposed.api.XposedInterface} APIs remain available.</p>
  *
  * <h2>Error Handling</h2>
  *

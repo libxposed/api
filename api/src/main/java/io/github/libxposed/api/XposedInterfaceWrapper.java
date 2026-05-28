@@ -24,7 +24,7 @@ public class XposedInterfaceWrapper implements XposedInterface {
     private Runnable mDetachImpl;
 
     /**
-     * Attaches the framework interface to the module. Modules must <b>not</b> call this method.
+     * Attaches the framework interface to the module. Modules <b>must not</b> call this method.
      * It is reserved for framework implementations and may change without compatibility guarantees.
      *
      * @param base       The framework interface
