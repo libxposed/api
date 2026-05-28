@@ -64,7 +64,7 @@ public class XposedInterfaceWrapper implements XposedInterface {
      *     <li>The module entry has finished all its initialization work and no longer needs to
      *     respond to further package loading events.</li>
      *     <li>For modules that target multiple apps with a dedicated entry class per app: if the
-     *     entry detects it is not loaded in its target app , it can call this method immediately to
+     *     entry detects it is not loaded in its target app, it can call this method immediately to
      *     avoid receiving any further callbacks.</li>
      *     <li>Calling this method together with unhooking all registered hooks, so that the module
      *     classloader can be garbage collected when no longer needed.</li>
