@@ -12,6 +12,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
 
+import io.github.libxposed.annotation.SinceApi;
+
 /**
  * Wrapper of {@link XposedInterface} used by modules to shield framework implementation details.
  */
@@ -142,5 +144,12 @@ public class XposedInterfaceWrapper implements XposedInterface {
     public final ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException {
         ensureAttached();
         return mBase.openRemoteFile(name);
+    }
+
+    @SinceApi(API_102)
+    @Override
+    public final void detach() {
+        ensureAttached();
+        mBase.detach();
     }
 }
