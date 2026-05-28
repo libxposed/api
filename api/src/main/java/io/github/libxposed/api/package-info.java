@@ -8,7 +8,7 @@
  * <h2>Getting Started</h2>
  *
  * <p>Module entry classes should extend {@link io.github.libxposed.api.XposedModule}. The
- * framework calls {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework(XposedInterface)
+ * framework calls {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework
  * attachFramework()} automatically; modules <b>should not</b> perform initialization work before
  * {@link io.github.libxposed.api.XposedModuleInterface#onModuleLoaded(XposedModuleInterface.ModuleLoadedParam)
  * onModuleLoaded()} is called.</p>
