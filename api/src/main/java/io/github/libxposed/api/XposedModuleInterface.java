@@ -129,13 +129,14 @@ public interface XposedModuleInterface {
         Bundle getExtras();
 
         /**
-         * Sets the data to be passed to the new code after hot reloading. This can be retrieved in {@link #onHotReloaded(HotReloadedParam)}.
-         * Objects created under the system, system server, or app classloaders can be used. Be careful
-         * that you should <b>NEVER</b> put an object that is created under the old module classloader, or
-         * the old code may remain strongly reachable after hot reloading. If needed, you should use
+         * Sets the data to be passed to the new code after hot reloading. This can be retrieved in
+         * {@link #onHotReloaded(HotReloadedParam)}. Objects created under the system, system server,
+         * or app classloaders can be used. Objects created under the old module classloader are rejected
+         * because they would keep the old code strongly reachable after hot reloading. If needed, use
          * {@link Bundle} to serialize the data.
          *
          * @param outState The data to be passed to the new code after hot reloading
+         * @throws IllegalArgumentException if {@code outState} was created under the old module classloader
          */
         void setSavedInstanceState(@Nullable Object outState);
     }
