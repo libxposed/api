@@ -135,6 +135,15 @@
  * needs lifecycle callbacks. This stops subsequent lifecycle callbacks only for the current entry;
  * hooks and other {@link io.github.libxposed.api.XposedInterface} APIs remain available.</p>
  *
+ * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
+ * with zero or multiple Java entry classes are not hot-reloadable.</p>
+ *
+ * <p>Hot reload is not supported for modules that declare native entries. If module code
+ * successfully loads a native library in a hooked target process through
+ * {@link java.lang.System#load(String)} or {@link java.lang.System#loadLibrary(String)}, that
+ * target is no longer hot-reloadable until it restarts. Hot reload never unloads, reloads, or
+ * replaces native libraries loaded by a previous module generation.</p>
+ *
  * <h2>Error Handling</h2>
  *
  * <p>Framework-level errors are reported via subclasses of

@@ -114,7 +114,10 @@ public interface XposedModuleInterface {
      * Wraps information about the hot reloading event.
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with multiple Java entry classes are rejected before hot reload callbacks are invoked.
+     * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
+     * are invoked. Modules that declare native entries are not hot-reloadable. If module code
+     * successfully loads a native library in a target process, that target is no longer
+     * hot-reloadable until it restarts.
      * </p>
      */
     @SinceApi(XposedInterface.API_102)
@@ -240,12 +243,20 @@ public interface XposedModuleInterface {
      * <p>This callback runs in <b>old</b> code.</p>
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with multiple Java entry classes are rejected before this callback is invoked.
+     * Modules with zero or multiple Java entry classes and modules that declare native entries
+     * are rejected before this callback is invoked. If module code successfully loads a native
+     * library in a target process, that target is no longer hot-reloadable until it restarts.
      * </p>
      * <p>
      * Hot reloads are serialized per target. Before the old hook handle list is captured, the
      * framework freezes old code so further hook registrations from old code fail. In-flight hook
      * calls keep using the hook chain snapshot that was active when they started.
+     * </p>
+     * <p>
+     * Returning {@code false} rejects the hot reload request. For service-triggered requests, this
+     * is reported as {@code HotReloadResult.Status.FAILED} with a null message. If this callback
+     * or the subsequent reload operation throws, the request is reported as failed with a
+     * framework-provided diagnostic message.
      * </p>
      *
      * @param param Information about the hot reloading event
@@ -261,7 +272,9 @@ public interface XposedModuleInterface {
      * <p>This callback runs in <b>new</b> code.</p>
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with multiple Java entry classes are rejected before hot reload callbacks are invoked.
+     * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
+     * are invoked. Modules that declare native entries are not hot-reloadable. Hot reload also
+     * does not unload, reload, or replace native libraries loaded by module code.
      * </p>
      * <p>
      * Package lifecycle callbacks are not automatically replayed after hot reload. Override this
