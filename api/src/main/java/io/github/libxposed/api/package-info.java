@@ -133,16 +133,38 @@
  * <p>Since API 102, an entry can call
  * {@link io.github.libxposed.api.XposedInterfaceWrapper#detach() detach()} after it no longer
  * needs lifecycle callbacks. This stops subsequent lifecycle callbacks only for the current entry;
- * hooks and other {@link io.github.libxposed.api.XposedInterface} APIs remain available.</p>
+ * the framework also removes its reference to that entry instance. Hooks and other
+ * {@link io.github.libxposed.api.XposedInterface} APIs remain available. A module that expects its
+ * classloader to become collectible after detaching must also remove module-owned references and
+ * execution contexts that keep module objects reachable, such as installed hooks, Java or native
+ * threads, callbacks held by system or app objects, JNI global references, and native state. If
+ * native code is still running after all Java references to the module classloader are cleared,
+ * later runtime unloading of native libraries may crash the process; this is a module lifecycle
+ * bug.</p>
  *
  * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
  * with zero or multiple Java entry classes are not hot-reloadable.</p>
  *
- * <p>Hot reload is not supported for modules that declare native entries. If module code
- * successfully loads a native library in a hooked target process through
- * {@link java.lang.System#load(String)} or {@link java.lang.System#loadLibrary(String)}, that
- * target is no longer hot-reloadable until it restarts. Hot reload never unloads, reloads, or
- * replaces native libraries loaded by a previous module generation.</p>
+ * <p>State passed from {@code onHotReloading()} to {@code onHotReloaded()} through
+ * {@code setSavedInstanceState()} must be classloader-neutral. It must not contain objects created
+ * under the old module classloader. Framework implementations reject such objects when detected,
+ * but this check is a diagnostic aid rather than a complete object graph verifier. Passing an
+ * undetected old-module object is still a module lifecycle bug.</p>
+ *
+ * <p>Modules that use native code are responsible for making the old generation safe to retire
+ * before {@code onHotReloading()} returns {@code true}. This includes stopping module-owned Java
+ * and native threads, unregistering native hooks and external callbacks, releasing JNI global
+ * references to module-classloader objects, and clearing references stored by system or app
+ * classes. {@code JNI_OnUnload} is not a hot reload callback and must only be used as an
+ * idempotent fallback cleanup path.</p>
+ *
+ * <p>The framework keeps the previous module generation strongly reachable until
+ * {@code onHotReloaded()} finishes, then releases all references it owns to the old generation.
+ * Old hooks that were not unhooked or replaced, module-created threads, JNI global references,
+ * callbacks, or other module-owned references may still keep the old generation alive. If no such
+ * references remain, the runtime may later collect the old classloader and unload native libraries
+ * associated with it. The framework does not call {@code UnregisterNatives},
+ * {@code JNI_OnUnload}, or {@code dlclose} as part of hot reload.</p>
  *
  * <h2>Error Handling</h2>
  *

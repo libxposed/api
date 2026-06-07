@@ -41,9 +41,7 @@ public interface XposedInterface {
      * <p>API additions:</p>
      * <ul>
      * <li>Hot reloading callbacks are available for modules that declare exactly one Java entry class.</li>
-     * <li>Hot reload is disabled for modules that do not declare exactly one Java entry class,
-     * modules that declare native entries, and targets where module code has successfully loaded
-     * a native library.</li>
+     * <li>Hot reload is disabled for modules that do not declare exactly one Java entry class.</li>
      * <li>Module entries can stop receiving subsequent lifecycle callbacks through
      * {@link XposedInterfaceWrapper#detach()}.</li>
      * <li>Hooks can be assigned an id through {@link HookBuilder#setId(String)}. Hook ids are

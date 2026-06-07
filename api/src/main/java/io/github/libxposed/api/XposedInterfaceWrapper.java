@@ -48,8 +48,9 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     /**
      * Stops all subsequent lifecycle callbacks for the <b>current module entry</b> in the current
-     * process. After this method is called, the framework will no longer invoke any lifecycle
-     * callbacks (such as {@link XposedModuleInterface#onPackageLoaded},
+     * process. After this method is called, the framework removes its reference to the entry
+     * instance and will no longer invoke any lifecycle callbacks (such as
+     * {@link XposedModuleInterface#onPackageLoaded},
      * {@link XposedModuleInterface#onHotReloading}, etc.) on the entry instance that
      * called this method. Only lifecycle callbacks are affected; all {@link XposedInterface} APIs
      * remain fully functional.
@@ -58,6 +59,13 @@ public class XposedInterfaceWrapper implements XposedInterface {
      * affected. Other entries continue to receive their lifecycle callbacks as normal.</p>
      *
      * <p>This method is idempotent. Calling it multiple times has the same effect as calling it once.</p>
+     *
+     * <p>If the module expects its classloader to become collectible after detaching, it must also
+     * remove module-owned references and execution contexts that keep module objects reachable, such
+     * as installed hooks, Java threads and callbacks held by system or app objects. Be careful if
+     * native code is still running after all Java references to the module classloader are cleared,
+     * later runtime unloading of native libraries may crash the process; this is a module lifecycle
+     * bug.</p>
      *
      * <p>Typical use cases include:</p>
      * <ul>

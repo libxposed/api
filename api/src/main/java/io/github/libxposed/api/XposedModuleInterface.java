@@ -115,9 +115,7 @@ public interface XposedModuleInterface {
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
      * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
-     * are invoked. Modules that declare native entries are not hot-reloadable. If module code
-     * successfully loads a native library in a target process, that target is no longer
-     * hot-reloadable until it restarts.
+     * are invoked.
      * </p>
      */
     @SinceApi(XposedInterface.API_102)
@@ -133,13 +131,19 @@ public interface XposedModuleInterface {
 
         /**
          * Sets the data to be passed to the new code after hot reloading. This can be retrieved in
-         * {@link #onHotReloaded(HotReloadedParam)}. Objects created under the system, system server,
-         * or app classloaders can be used. Objects created under the old module classloader are rejected
-         * because they would keep the old code strongly reachable after hot reloading. If needed, use
-         * {@link Bundle} to serialize the data.
+         * {@link #onHotReloaded(HotReloadedParam)}. The saved state must not contain objects created
+         * under the old module classloader because retaining them in the new generation can keep the
+         * old generation strongly reachable after hot reload. Use classloader-neutral values to
+         * transfer state.
+         * <p>
+         * Implementations should reject old-module-classloader objects when they are detected. This
+         * check is a diagnostic aid, not a complete object graph verifier; passing an undetected
+         * old-module object is still a module lifecycle bug.
+         * </p>
          *
          * @param outState The data to be passed to the new code after hot reloading
-         * @throws IllegalArgumentException if {@code outState} was created under the old module classloader
+         * @throws IllegalArgumentException if {@code outState} contains an object detected as being
+         *                                  created under the old module classloader
          */
         void setSavedInstanceState(@Nullable Object outState);
     }
@@ -158,7 +162,6 @@ public interface XposedModuleInterface {
 
         /**
          * Gets the data set in {@link HotReloadingParam#setSavedInstanceState(Object)}.
-         * This can be {@code null} if no data is set.
          */
         @Nullable
         Object getSavedInstanceState();
@@ -243,14 +246,20 @@ public interface XposedModuleInterface {
      * <p>This callback runs in <b>old</b> code.</p>
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with zero or multiple Java entry classes and modules that declare native entries
-     * are rejected before this callback is invoked. If module code successfully loads a native
-     * library in a target process, that target is no longer hot-reloadable until it restarts.
+     * Modules with zero or multiple Java entry classes are rejected before this callback is invoked.
      * </p>
      * <p>
      * Hot reloads are serialized per target. Before the old hook handle list is captured, the
      * framework freezes old code so further hook registrations from old code fail. In-flight hook
      * calls keep using the hook chain snapshot that was active when they started.
+     * </p>
+     * <p>
+     * Returning {@code true} declares that the old generation is ready to be retired. Before
+     * returning {@code true}, modules that use native code must stop or detach all module-owned
+     * execution contexts that may run old native code, unregister native hooks and external
+     * callbacks, release JNI global references to module-classloader objects, and clear references
+     * to module objects stored by system or app classes. {@code JNI_OnUnload} is not a hot reload
+     * callback and must not be required for this cleanup.
      * </p>
      * <p>
      * Returning {@code false} rejects the hot reload request. For service-triggered requests, this
@@ -273,8 +282,7 @@ public interface XposedModuleInterface {
      * <p>
      * Hot reloading is supported only for modules that declare exactly one Java entry class.
      * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
-     * are invoked. Modules that declare native entries are not hot-reloadable. Hot reload also
-     * does not unload, reload, or replace native libraries loaded by module code.
+     * are invoked.
      * </p>
      * <p>
      * Package lifecycle callbacks are not automatically replayed after hot reload. Override this
@@ -282,6 +290,19 @@ public interface XposedModuleInterface {
      * {@link XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)}, remove hooks that
      * should not survive, or perform reload-specific initialization. The default implementation
      * only unhooks all old hooks.
+     * </p>
+     * <p>
+     * The framework keeps the previous module generation strongly reachable until this callback
+     * finishes. After this callback returns or throws, the framework releases all references it owns
+     * to the old generation, except for references required by old hooks that remain installed and
+     * any references kept by module code. Classloader collection and unloading of native libraries
+     * associated with it are runtime-dependent and are not guaranteed to happen immediately.
+     * </p>
+     * <p>
+     * The framework does not call {@code UnregisterNatives}, {@code JNI_OnUnload}, or
+     * {@code dlclose} as part of hot reload. If all old Java references are removed while old
+     * native threads, callbacks, hooks, or JNI global references are still active, any resulting
+     * crash or undefined behavior is a module bug.
      * </p>
      *
      * @param param Information about the hot reloaded event
