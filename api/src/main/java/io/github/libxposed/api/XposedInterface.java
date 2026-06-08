@@ -48,8 +48,6 @@ public interface XposedInterface {
      * scoped to the current module and executable, and can be queried through
      * {@link HookHandle#getId()}.</li>
      * <li>Hooks can be atomically replaced through {@link HookHandle#replaceHook(Hooker)}.</li>
-     * <li>{@link #PROP_RT_HOT_RELOAD} indicates whether framework policy allows this module to
-     * request hot reload.</li>
      * </ul>
      * <p>Behavior changes: Modules targeting 102 or higher</p>
      * <ul>
@@ -76,15 +74,6 @@ public interface XposedInterface {
      * The framework disallows accessing Xposed API via reflection or dynamically loaded code.
      */
     long PROP_RT_API_PROTECTION = 1L << 2;
-
-    /**
-     * Framework policy allows this module to request hot reload through the service.
-     * <p>
-     * This property only describes framework policy, such as a safety option. It does not
-     * guarantee that any target is hot-reloadable or that a hot reload request can complete.
-     * </p>
-     */
-    long PROP_RT_HOT_RELOAD = 1L << 3;
 
     /**
      * The default hook priority.
