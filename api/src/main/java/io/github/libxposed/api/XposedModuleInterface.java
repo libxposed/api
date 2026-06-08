@@ -112,11 +112,6 @@ public interface XposedModuleInterface {
 
     /**
      * Wraps information about the hot reloading event.
-     * <p>
-     * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
-     * are invoked.
-     * </p>
      */
     @SinceApi(XposedInterface.API_102)
     interface HotReloadingParam {
@@ -245,10 +240,6 @@ public interface XposedModuleInterface {
      * returns {@code true}.
      * <p>This callback runs in <b>old</b> code.</p>
      * <p>
-     * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with zero or multiple Java entry classes are rejected before this callback is invoked.
-     * </p>
-     * <p>
      * Hot reloads are serialized per target. Before the old hook handle list is captured, the
      * framework freezes old code so further hook registrations from old code fail. In-flight hook
      * calls keep using the hook chain snapshot that was active when they started.
@@ -279,11 +270,6 @@ public interface XposedModuleInterface {
     /**
      * Gets notified when the module has been reloaded.
      * <p>This callback runs in <b>new</b> code.</p>
-     * <p>
-     * Hot reloading is supported only for modules that declare exactly one Java entry class.
-     * Modules with zero or multiple Java entry classes are rejected before hot reload callbacks
-     * are invoked.
-     * </p>
      * <p>
      * Package lifecycle callbacks are not automatically replayed after hot reload. Override this
      * method to atomically replace old hooks through

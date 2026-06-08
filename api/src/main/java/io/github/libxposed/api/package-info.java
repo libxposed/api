@@ -41,9 +41,8 @@
  *     apply the module on apps outside the scope list</li>
  *     <li>{@code exceptionMode} (string) [protective|passthrough] - Default to protective, see
  *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
- *     <li>{@code autoHotReload} (boolean, API 102+) - whether app updates should automatically trigger hot
- *     reloading. Hot reloading is supported only for modules that declare exactly one Java entry
- *     class, and still proceeds only when
+ *     <li>{@code autoHotReload} (boolean, API 102+) - whether app updates should automatically
+ *     trigger hot reloading. App-update hot reloading still proceeds only when
  *     {@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
  *     onHotReloading()} returns {@code true}.</li>
  * </ul>
@@ -122,12 +121,9 @@
  *     onSystemServerStarting()} – called once when system server is starting. This callback
  *     replaces the first package load phase.</li>
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
- *     onHotReloading()} - called in old code before hot reloading proceeds. Hot reloading is
- *     supported only for modules that declare exactly one Java entry class.</li>
+ *     onHotReloading()} - called in old code before hot reloading proceeds.</li>
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloaded(XposedModuleInterface.HotReloadedParam)
- *     onHotReloaded()} - called in new code after hot reloading completes. Package lifecycle
- *     callbacks are not automatically replayed; modules that opt into hot reload should install or
- *     replace their hooks explicitly from this callback.</li>
+ *     onHotReloaded()} - called in new code after hot reloading completes.</li>
  * </ul>
  *
  * <p>Since API 102, an entry can call
@@ -136,14 +132,16 @@
  * the framework also removes its reference to that entry instance. Hooks and other
  * {@link io.github.libxposed.api.XposedInterface} APIs remain available. A module that expects its
  * classloader to become collectible after detaching must also remove module-owned references and
- * execution contexts that keep module objects reachable, such as installed hooks, Java or native
- * threads, callbacks held by system or app objects, JNI global references, and native state. If
- * native code is still running after all Java references to the module classloader are cleared,
- * later runtime unloading of native libraries may crash the process; this is a module lifecycle
- * bug.</p>
+ * execution contexts that keep module objects reachable, such as installed hooks, Java threads,
+ * and callbacks held by system or app objects. If native code is still running after all Java
+ * references to the module classloader are cleared, later runtime unloading of native libraries
+ * may crash the process; this is a module lifecycle bug.</p>
  *
  * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
- * with zero or multiple Java entry classes are not hot-reloadable.</p>
+ * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
+ * also report hot reload as unsupported when they cannot provide a valid new module generation for
+ * the requested module or target. The API does not mandate how frameworks stage code or native
+ * libraries across generations.</p>
  *
  * <p>State passed from {@code onHotReloading()} to {@code onHotReloaded()} through
  * {@code setSavedInstanceState()} must be classloader-neutral. It must not contain objects created

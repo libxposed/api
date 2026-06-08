@@ -62,10 +62,9 @@ public class XposedInterfaceWrapper implements XposedInterface {
      *
      * <p>If the module expects its classloader to become collectible after detaching, it must also
      * remove module-owned references and execution contexts that keep module objects reachable, such
-     * as installed hooks, Java threads and callbacks held by system or app objects. Be careful if
-     * native code is still running after all Java references to the module classloader are cleared,
-     * later runtime unloading of native libraries may crash the process; this is a module lifecycle
-     * bug.</p>
+     * as installed hooks, Java threads, and callbacks held by system or app objects. If native code
+     * is still running after all Java references to the module classloader are cleared, later runtime
+     * unloading of native libraries may crash the process; this is a module lifecycle bug.</p>
      *
      * <p>Typical use cases include:</p>
      * <ul>
