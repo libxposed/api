@@ -15,9 +15,6 @@
  * {@link io.github.libxposed.api.XposedModuleInterface#onModuleLoaded(XposedModuleInterface.ModuleLoadedParam)
  * onModuleLoaded()} is called.</p>
  *
- * <p>Modules targeting Xposed API 102 or higher must use the modern libxposed API directly and
- * must not call legacy {@code de.robv.android.xposed} APIs.</p>
- *
  * <h2>Entry Registration</h2>
  *
  * <p>Java entry classes are listed in {@code META-INF/xposed/java_init.list} (one fully-qualified
@@ -53,7 +50,9 @@
  * The framework injects the module into all regular processes declared by those packages.
  * After injection, every loaded package in that process will trigger callbacks.
  * As a result, modules may receive callbacks beyond the originally scoped packages, so they
- * should always filter by process name and package name.</p>
+ * should always filter by process name and package name. For unnecessary processes, modules
+ * can call {@link io.github.libxposed.api.XposedInterfaceWrapper#detach() detach()}
+ * to stop receiving further callbacks. </p>
  *
  * <p>A special case applies to components declared with {@code android:process="system"} in a
  * {@code android:sharedUserId="android.uid.system"} package: they run in system server.
@@ -88,14 +87,6 @@
  *     });
  * }</pre>
  *
- * <p>Since API 102, hooks may be assigned an optional id through
- * {@link io.github.libxposed.api.XposedInterface.HookBuilder#setId(String) setId(String)}.
- * A hook id is scoped to the current module and executable. Installing another hook with the same
- * id replaces the old hook atomically, and
- * {@link io.github.libxposed.api.XposedInterface.HookHandle#replaceHook(XposedInterface.Hooker)
- * replaceHook(Hooker)} can atomically replace an existing hook handle while preserving its
- * executable, priority, exception handling mode, and id.</p>
- *
  * <h2>Invoker System</h2>
  *
  * <p>To call the original (or hooked) method bypassing access checks, obtain an
@@ -125,44 +116,6 @@
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloaded(XposedModuleInterface.HotReloadedParam)
  *     onHotReloaded()} - called in new code after hot reloading completes.</li>
  * </ul>
- *
- * <p>Since API 102, an entry can call
- * {@link io.github.libxposed.api.XposedInterfaceWrapper#detach() detach()} after it no longer
- * needs lifecycle callbacks. This stops subsequent lifecycle callbacks only for the current entry;
- * the framework also removes its reference to that entry instance. Hooks and other
- * {@link io.github.libxposed.api.XposedInterface} APIs remain available. A module that expects its
- * classloader to become collectible after detaching must also remove module-owned references and
- * execution contexts that keep module objects reachable, such as installed hooks, Java threads,
- * and callbacks held by system or app objects. If native code is still running after all Java
- * references to the module classloader are cleared, later runtime unloading of native libraries
- * may crash the process; this is a module lifecycle bug.</p>
- *
- * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
- * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
- * also report hot reload as unsupported when they cannot provide a valid new module generation for
- * the requested module or target. The API does not mandate how frameworks stage code or native
- * libraries across generations.</p>
- *
- * <p>State passed from {@code onHotReloading()} to {@code onHotReloaded()} through
- * {@code setSavedInstanceState()} must be classloader-neutral. It must not contain objects created
- * under the old module classloader. Framework implementations reject such objects when detected,
- * but this check is a diagnostic aid rather than a complete object graph verifier. Passing an
- * undetected old-module object is still a module lifecycle bug.</p>
- *
- * <p>Modules that use native code are responsible for making the old generation safe to retire
- * before {@code onHotReloading()} returns {@code true}. This includes stopping module-owned Java
- * and native threads, unregistering native hooks and external callbacks, releasing JNI global
- * references to module-classloader objects, and clearing references stored by system or app
- * classes. {@code JNI_OnUnload} is not a hot reload callback and must only be used as an
- * idempotent fallback cleanup path.</p>
- *
- * <p>The framework keeps the previous module generation strongly reachable until
- * {@code onHotReloaded()} finishes, then releases all references it owns to the old generation.
- * Old hooks that were not unhooked or replaced, module-created threads, JNI global references,
- * callbacks, or other module-owned references may still keep the old generation alive. If no such
- * references remain, the runtime may later collect the old classloader and unload native libraries
- * associated with it. The framework does not call {@code UnregisterNatives},
- * {@code JNI_OnUnload}, or {@code dlclose} as part of hot reload.</p>
  *
  * <h2>Error Handling</h2>
  *

@@ -240,17 +240,23 @@ public interface XposedModuleInterface {
      * returns {@code true}.
      * <p>This callback runs in <b>old</b> code.</p>
      * <p>
+     * Hot reload is supported only for modules that declare exactly one Java entry class. Modules
+     * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
+     * also report hot reload as unsupported when they cannot provide a valid new module generation for
+     * the requested module or target. The API does not mandate how frameworks stage code or native
+     * libraries across generations.
+     * </p>
+     * <p>
      * Hot reloads are serialized per target. Before the old hook handle list is captured, the
      * framework freezes old code so further hook registrations from old code fail. In-flight hook
      * calls keep using the hook chain snapshot that was active when they started.
      * </p>
      * <p>
      * Returning {@code true} declares that the old generation is ready to be retired. Before
-     * returning {@code true}, modules that use native code must stop or detach all module-owned
-     * execution contexts that may run old native code, unregister native hooks and external
-     * callbacks, release JNI global references to module-classloader objects, and clear references
-     * to module objects stored by system or app classes. {@code JNI_OnUnload} is not a hot reload
-     * callback and must not be required for this cleanup.
+     * returning {@code true}, modules must stop all module-owned Java and native threads,
+     * unregister native hooks and external callbacks, release JNI global references to
+     * module-classloader objects, and clear references to module objects stored by system
+     * or app classes.
      * </p>
      * <p>
      * Returning {@code false} rejects the hot reload request. For service-triggered requests, this

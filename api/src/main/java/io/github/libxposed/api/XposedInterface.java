@@ -38,20 +38,15 @@ public interface XposedInterface {
 
     /**
      * API version 102.
-     * <p>API additions:</p>
+     * <p>New features</p>
      * <ul>
-     * <li>Hot reloading callbacks are available for modules that declare exactly one Java entry class;
-     * modules that do not declare exactly one Java entry class are not hot-reloadable.</li>
-     * <li>Module entries can stop receiving subsequent lifecycle callbacks through
-     * {@link XposedInterfaceWrapper#detach()}.</li>
-     * <li>Hooks can be assigned an id through {@link HookBuilder#setId(String)}. Hook ids are
-     * scoped to the current module and executable, and can be queried through
-     * {@link HookHandle#getId()}.</li>
-     * <li>Hooks can be atomically replaced through {@link HookHandle#replaceHook(Hooker)}.</li>
+     * <li>Hot reload allows modules to be updated without restarting the process.</li>
+     * <li>Module entries can stop receiving subsequent lifecycle callbacks.</li>
+     * <li>Hooks can be atomically replaced by api or same id.</li>
      * </ul>
      * <p>Behavior changes: Modules targeting 102 or higher</p>
      * <ul>
-     * <li>Libxposed modules must not call legacy {@code de.robv.android.xposed} APIs.</li>
+     * <li>Libxposed modules can not call legacy {@code de.robv.android.xposed} APIs.</li>
      * </ul>
      */
     int API_102 = 102;
