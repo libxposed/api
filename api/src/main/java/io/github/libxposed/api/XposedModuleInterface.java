@@ -240,13 +240,6 @@ public interface XposedModuleInterface {
      * returns {@code true}.
      * <p>This callback runs in <b>old</b> code.</p>
      * <p>
-     * Hot reload is supported only for modules that declare exactly one Java entry class. Modules
-     * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
-     * also report hot reload as unsupported when they cannot provide a valid new module generation for
-     * the requested module or target. The API does not mandate how frameworks stage code or native
-     * libraries across generations.
-     * </p>
-     * <p>
      * Hot reloads are serialized per target. Before the old hook handle list is captured, the
      * framework freezes old code so further hook registrations from old code fail. In-flight hook
      * calls keep using the hook chain snapshot that was active when they started.

@@ -117,6 +117,12 @@
  *     onHotReloaded()} - called in new code after hot reloading completes.</li>
  * </ul>
  *
+ * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
+ * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
+ * also report hot reload as unsupported when they cannot provide a valid new module generation for
+ * the requested module or target. The API does not mandate how frameworks stage code or native
+ * libraries across generations.</p>
+ *
  * <h2>Error Handling</h2>
  *
  * <p>Framework-level errors are reported via subclasses of
