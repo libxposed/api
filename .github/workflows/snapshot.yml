@@ -1,13 +1,18 @@
-name: Deploy to Maven Central
+name: Publish Sonatype Snapshot
 
 on:
   workflow_dispatch:
+    inputs:
+      dependency_snapshot:
+        description: 'Use snapshot annotation and lint dependencies'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,17 +28,18 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Publish to Maven Central
+    - name: Publish snapshot to Sonatype
       run: |
         echo 'org.gradle.caching=true' >> gradle.properties
         echo 'org.gradle.parallel=true' >> gradle.properties
         echo 'org.gradle.vfs.watch=true' >> gradle.properties
         echo 'org.gradle.jvmargs=-Xmx2048m' >> gradle.properties
-        ./gradlew publishApiPublicationToOssrhRepository
+        echo 'publishSnapshot=true' >> gradle.properties
+        echo 'dependencySnapshot=${{ github.event.inputs.dependency_snapshot }}' >> gradle.properties
+        ./gradlew publishApiPublicationToSnapshotsRepository
         ./gradlew --stop
-        curl -X POST -H "Authorization: Bearer $(echo -n ${ORG_GRADLE_PROJECT_ossrhUsername}:${ORG_GRADLE_PROJECT_ossrhPassword} | base64)" https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/io.github.libxposed
       env:
         ORG_GRADLE_PROJECT_signingKey: ${{ secrets.maven_pgp_signingKey }}
         ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.maven_pgp_signingPassword }}
-        ORG_GRADLE_PROJECT_ossrhUsername: ${{ secrets.OSSRHUSERNAME }}
-        ORG_GRADLE_PROJECT_ossrhPassword: ${{ secrets.OSSRHPASSWORD }}
+        ORG_GRADLE_PROJECT_snapshotsUsername: ${{ secrets.OSSRHUSERNAME }}
+        ORG_GRADLE_PROJECT_snapshotsPassword: ${{ secrets.OSSRHPASSWORD }}

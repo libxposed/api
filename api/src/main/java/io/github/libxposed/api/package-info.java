@@ -8,8 +8,10 @@
  * <h2>Getting Started</h2>
  *
  * <p>Module entry classes should extend {@link io.github.libxposed.api.XposedModule}. The
- * framework calls {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework(XposedInterface)
- * attachFramework()} automatically; modules <b>should not</b> perform initialization work before
+ * framework calls the internal
+ * {@link io.github.libxposed.api.XposedInterfaceWrapper#attachFramework attachFramework()}
+ * bridge automatically; modules <b>must not</b> call it and <b>should not</b>
+ * perform initialization work before
  * {@link io.github.libxposed.api.XposedModuleInterface#onModuleLoaded(XposedModuleInterface.ModuleLoadedParam)
  * onModuleLoaded()} is called.</p>
  *
@@ -36,6 +38,10 @@
  *     apply the module on apps outside the scope list</li>
  *     <li>{@code exceptionMode} (string) [protective|passthrough] - Default to protective, see
  *     {@link io.github.libxposed.api.XposedInterface.ExceptionMode}</li>
+ *     <li>{@code autoHotReload} (boolean, API 102+) - whether app updates should automatically
+ *     trigger hot reloading. App-update hot reloading still proceeds only when
+ *     {@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
+ *     onHotReloading()} returns {@code true}.</li>
  * </ul>
  *
  * <h2>Scope</h2>
@@ -44,7 +50,9 @@
  * The framework injects the module into all regular processes declared by those packages.
  * After injection, every loaded package in that process will trigger callbacks.
  * As a result, modules may receive callbacks beyond the originally scoped packages, so they
- * should always filter by process name and package name.</p>
+ * should always filter by process name and package name. For unnecessary processes, modules
+ * can call {@link io.github.libxposed.api.XposedInterfaceWrapper#detach() detach()}
+ * to stop receiving further callbacks. </p>
  *
  * <p>A special case applies to components declared with {@code android:process="system"} in a
  * {@code android:sharedUserId="android.uid.system"} package: they run in system server.
@@ -103,7 +111,17 @@
  *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onSystemServerStarting(XposedModuleInterface.SystemServerStartingParam)
  *     onSystemServerStarting()} – called once when system server is starting. This callback
  *     replaces the first package load phase.</li>
+ *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloading(XposedModuleInterface.HotReloadingParam)
+ *     onHotReloading()} - called in old code before hot reloading proceeds.</li>
+ *     <li>{@link io.github.libxposed.api.XposedModuleInterface#onHotReloaded(XposedModuleInterface.HotReloadedParam)
+ *     onHotReloaded()} - called in new code after hot reloading completes.</li>
  * </ul>
+ *
+ * <p>Hot reload is supported only for modules that declare exactly one Java entry class. Modules
+ * with zero or multiple Java entry classes are not hot-reloadable. Framework implementations may
+ * also report hot reload as unsupported when they cannot provide a valid new module generation for
+ * the requested module or target. The API does not mandate how frameworks stage code or native
+ * libraries across generations.</p>
  *
  * <h2>Error Handling</h2>
  *
