@@ -52,10 +52,20 @@ public interface XposedInterface {
     int API_102 = 102;
 
     /**
+     * API version 103.
+     * <p>New features</p>
+     * <ul>
+     * <li>Modules can run read-only SQL queries over a loaded package's APK/DEX via
+     * {@link XposedModuleInterface.PackageLoadedParam#openDex}.</li>
+     * </ul>
+     */
+    int API_103 = 103;
+
+    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = API_102;
+    int LIB_API = API_103;
 
     /**
      * The framework has the capability to hook system_server and other system processes.

@@ -75,6 +75,20 @@ public interface XposedModuleInterface {
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
         ClassLoader getDefaultClassLoader();
+
+        /**
+         * Opens a read-only SQL view over this package's APK/DEX. The returned
+         * {@link DexDatabase} runs multiple {@link DexDatabase#query queries} and must be
+         * {@link DexDatabase#close() closed} when done (it holds the mapped dex/cache). The
+         * query is consumed like {@link android.database.sqlite.SQLiteDatabase#rawQuery}; only
+         * {@code SELECT}-style reads are supported.
+         *
+         * @return A {@link DexDatabase} over this package's dex; close it when done
+         * @throws UnsupportedOperationException If the framework does not support dex queries
+         */
+        @SinceApi(XposedInterface.API_103)
+        @NonNull
+        DexDatabase openDex();
     }
 
     /**
