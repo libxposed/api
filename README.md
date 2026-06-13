@@ -17,6 +17,18 @@ dependencies {
 }
 ```
 
+If minification is enabled, add these rules to the app's ProGuard/R8 configuration:
+
+```proguard
+-dontwarn io.github.libxposed.annotation.**
+-adaptresourcefilecontents META-INF/xposed/java_init.list
+-keep,allowoptimization,allowobfuscation public class * extends io.github.libxposed.api.XposedModule {
+    public <init>();
+}
+```
+
+These rules keep module entry classes from being removed and rewrite `META-INF/xposed/java_init.list` when entry classes are obfuscated.
+
 ### For Framework Developers
 
 ```kotlin

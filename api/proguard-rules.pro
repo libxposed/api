@@ -1,5 +1,10 @@
+# These rules are for the framework. Module rules should refer to README.md.
 -dontwarn io.github.libxposed.annotation.**
--adaptresourcefilecontents META-INF/xposed/java_init.list
--keep,allowoptimization,allowobfuscation public class * extends io.github.libxposed.api.XposedModule {
-    public <init>();
+-keep,allowoptimization public class io.github.libxposed.api.** {
+    public <fields>;
+    protected <fields>;
+    public <methods>;
+    protected <methods>;
+    public <init>(...);
+    protected <init>(...);
 }
