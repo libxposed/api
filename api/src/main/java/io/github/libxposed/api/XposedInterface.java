@@ -12,6 +12,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import io.github.libxposed.api.error.HookFailedError;
@@ -55,8 +56,9 @@ public interface XposedInterface {
      * API version 103.
      * <p>New features</p>
      * <ul>
-     * <li>Modules can run read-only SQL queries over a loaded package's APK/DEX via
-     * {@link XposedModuleInterface.PackageLoadedParam#openDex}.</li>
+     * <li>Modules can open read-only SQL views over dex sources owned by arbitrary
+     * {@link ClassLoader class loaders} or supplied as in-memory APK/JAR/DEX data via
+     * {@link #openDex(ClassLoader)} and {@link #openDex(ByteBuffer...)}.</li>
      * </ul>
      */
     int API_103 = 103;
@@ -495,6 +497,50 @@ public interface XposedInterface {
      * @return Indicate whether the deoptimizing succeed or not
      */
     boolean deoptimize(@NonNull Executable executable);
+
+    /**
+     * Opens a read-only SQL view over dex sources owned by a class loader.
+     *
+     * <p>The query covers dex sources owned directly by {@code classLoader}; parent class loaders
+     * are not included. Framework implementations should support common Android dex class loaders
+     * such as {@link dalvik.system.PathClassLoader}, {@link dalvik.system.DexClassLoader},
+     * {@link dalvik.system.DelegateLastClassLoader}, and
+     * {@link dalvik.system.InMemoryDexClassLoader}.</p>
+     *
+     * <p>This method must not load classes from {@code classLoader}. The returned
+     * {@link DexDatabase} owns the mapped dex/cache resources until
+     * {@link DexDatabase#close() closed}; closing the database does not affect the class loader.</p>
+     *
+     * @param classLoader The class loader whose dex sources should be queried
+     * @return A {@link DexDatabase} over the class loader's dex sources; close it when done
+     * @throws IllegalArgumentException      If {@code classLoader} is not a supported dex class
+     *                                       loader or does not contain supported dex content
+     */
+    @SinceApi(API_103)
+    @NonNull
+    DexDatabase openDex(@NonNull ClassLoader classLoader);
+
+    /**
+     * Opens a read-only SQL view over in-memory APK/JAR/DEX data.
+     *
+     * <p>Each source may contain a raw {@code .dex} file or a zip-based container such as an
+     * APK/JAR containing {@code classes*.dex} entries.</p>
+     *
+     * <p>For each buffer, the bytes between its current {@link ByteBuffer#position() position} and
+     * {@link ByteBuffer#limit() limit} are used. This method must not change the buffer's
+     * position, limit, or mark. Heap, direct, mapped, and read-only buffers are all valid.
+     * Framework implementations may retain the supplied buffers until the returned
+     * {@link DexDatabase} is {@link DexDatabase#close() closed}; callers must not mutate the
+     * remaining bytes or their backing storage before then.</p>
+     *
+     * @param sources One or more buffers containing APK/JAR/DEX data
+     * @return A {@link DexDatabase} over the supplied sources; close it when done
+     * @throws IllegalArgumentException      If {@code sources} is empty, contains {@code null}, or
+     *                                       does not contain supported dex content
+     */
+    @SinceApi(API_103)
+    @NonNull
+    DexDatabase openDex(@NonNull ByteBuffer... sources);
 
     /**
      * Get a method invoker for the given method. Invocations through invokers will bypass access

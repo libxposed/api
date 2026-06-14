@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.nio.ByteBuffer;
 
 import io.github.libxposed.annotation.InternalApi;
 import io.github.libxposed.annotation.SinceApi;
@@ -134,6 +135,22 @@ public class XposedInterfaceWrapper implements XposedInterface {
     public final boolean deoptimize(@NonNull Executable executable) {
         ensureAttached();
         return mBase.deoptimize(executable);
+    }
+
+    @SinceApi(API_103)
+    @NonNull
+    @Override
+    public final DexDatabase openDex(@NonNull ClassLoader classLoader) {
+        ensureAttached();
+        return mBase.openDex(classLoader);
+    }
+
+    @SinceApi(API_103)
+    @NonNull
+    @Override
+    public final DexDatabase openDex(@NonNull ByteBuffer... sources) {
+        ensureAttached();
+        return mBase.openDex(sources);
     }
 
     @NonNull
