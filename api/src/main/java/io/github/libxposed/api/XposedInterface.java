@@ -537,6 +537,7 @@ public interface XposedInterface {
      * @param assignable Whether to match subclasses of the class.
      * @param <T>        The expected type of matching objects
      * @return A list of matching objects. The list is immutable and contains strong references to the objects.
+     * @throws IllegalArgumentException if the class is primitive or void
      */
     @SinceApi(API_103)
     @NonNull
@@ -548,6 +549,7 @@ public interface XposedInterface {
      * @param classes    The classes to match. Primitive classes and {@code void.class} are not valid.
      * @param assignable Whether to match subclasses of the classes.
      * @return An array of lists of matching objects. The array is in the same order as the input classes.
+     * @throws IllegalArgumentException if any class is primitive, void or null
      * @see #findInstances(Class, boolean)
      */
     @SinceApi(API_103)
