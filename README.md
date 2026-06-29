@@ -1,6 +1,6 @@
 # libxposed API
 
-[![API](https://img.shields.io/badge/API-102-brightgreen)](https://github.com/libxposed/api)
+[![API](https://img.shields.io/badge/API-103-brightgreen)](https://github.com/libxposed/api)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.libxposed/api?color=blue)](https://central.sonatype.com/artifact/io.github.libxposed/api)
 [![Android Min SDK](https://img.shields.io/badge/minSdk-26-orange)](https://developer.android.com/about/versions/oreo)
 [![License](https://img.shields.io/github/license/libxposed/api)](LICENSE)
@@ -13,7 +13,7 @@ Modern Xposed Module API — a type-safe, redesigned replacement for the legacy 
 
 ```kotlin
 dependencies {
-    compileOnly("io.github.libxposed:api:102.0.0")
+    compileOnly("io.github.libxposed:api:103.0.0")
 }
 ```
 
@@ -33,7 +33,7 @@ These rules keep module entry classes from being removed and rewrite `META-INF/x
 
 ```kotlin
 dependencies {
-    implementation("io.github.libxposed:api:102.0.0")
+    implementation("io.github.libxposed:api:103.0.0")
 }
 ```
 

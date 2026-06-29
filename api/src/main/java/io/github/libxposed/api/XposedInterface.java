@@ -52,10 +52,19 @@ public interface XposedInterface {
     int API_102 = 102;
 
     /**
+     * API version 103.
+     * <p>New features</p>
+     * <ul>
+     * <li>Added interfaces for finding already-created objects by class.</li>
+     * </ul>
+     */
+    int API_103 = 103;
+
+    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = API_102;
+    int LIB_API = API_103;
 
     /**
      * The framework has the capability to hook system_server and other system processes.
@@ -506,6 +515,44 @@ public interface XposedInterface {
      */
     @NonNull
     <T> CtorInvoker<T> getInvoker(@NonNull Constructor<T> constructor);
+
+    /**
+     * Scans the Java heap for live objects matching the supplied class.
+     *
+     * <p>This can be used to obtain already-created target objects directly instead of installing nested hooks
+     * only to capture them from later calls.</p>
+     *
+     * <p>Returned object references are strong references. Keeping the returned results reachable also keeps
+     * returned objects reachable.</p>
+     *
+     * <p>The framework does not run a garbage collection before scanning. Non-reachable but not-yet-collected objects
+     * will be returned as well. If you need to exclude objects that are only waiting to be collected, you should trigger
+     * garbage collection before calling this method.</p>
+     *
+     * <p>The overload of scanning one class is the same as scanning multiple classes with the batched API.
+     * If you need to scan multiple classes, it is recommended to use the batched API to reduce the number
+     * of heap walks and improve performance.</p>
+     *
+     * @param clazz      The class to match. Primitive classes and {@code void.class} are not valid.
+     * @param assignable Whether to match subclasses of the class.
+     * @param <T>        The expected type of matching objects
+     * @return A list of matching objects. The list is immutable and contains strong references to the objects.
+     */
+    @SinceApi(API_103)
+    @NonNull
+    <T> List<T> findInstances(@NonNull Class<T> clazz, boolean assignable);
+
+    /**
+     * Scans the Java heap for live objects matching the supplied classes.
+     *
+     * @param classes    The classes to match. Primitive classes and {@code void.class} are not valid.
+     * @param assignable Whether to match subclasses of the classes.
+     * @return An array of lists of matching objects. The array is in the same order as the input classes.
+     * @see #findInstances(Class, boolean)
+     */
+    @SinceApi(API_103)
+    @NonNull
+    List<?>[] findInstances(@NonNull Class<?>[] classes, boolean assignable);
 
     /**
      * Writes a message to the Xposed log.

@@ -97,6 +97,15 @@
  * getInvoker(Constructor)}. The invoker type controls what part of the hook chain is executed
  * (see {@link io.github.libxposed.api.XposedInterface.Invoker.Type Invoker.Type}).</p>
  *
+ * <h2>Object Scanning (API 103+)</h2>
+ *
+ * <p>Find already-created objects by class with
+ * {@link io.github.libxposed.api.XposedInterface#findInstances(java.lang.Class, boolean)} or
+ * {@link io.github.libxposed.api.XposedInterface#findInstances(java.lang.Class[], boolean)}.
+ * This is useful when a module needs a target object that may already exist before its hooks are
+ * installed, avoiding extra nested hooks whose only purpose is to capture that object from later
+ * calls.</p>
+ *
  * <h2>Module Lifecycle Callbacks</h2>
  *
  * <p>Override the following callbacks in {@link io.github.libxposed.api.XposedModule}:</p>
