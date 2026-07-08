@@ -11,7 +11,6 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import io.github.libxposed.annotation.InternalApi;
 import io.github.libxposed.annotation.SinceApi;
@@ -153,14 +152,14 @@ public class XposedInterfaceWrapper implements XposedInterface {
 
     @NonNull
     @Override
-    public <T> List<T> findInstances(@NonNull Class<T> clazz, boolean assignable) {
+    public <T> T[] findInstances(@NonNull Class<T> clazz, boolean assignable) {
         ensureAttached();
         return mBase.findInstances(clazz, assignable);
     }
 
     @NonNull
     @Override
-    public List<?>[] findInstances(@NonNull Class<?>[] classes, boolean assignable) {
+    public Object[][] findInstances(@NonNull Class<?>[] classes, boolean assignable) {
         ensureAttached();
         return mBase.findInstances(classes, assignable);
     }

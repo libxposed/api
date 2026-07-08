@@ -536,25 +536,26 @@ public interface XposedInterface {
      * @param clazz      The class to match. Primitive classes and {@code void.class} are not valid.
      * @param assignable Whether to match subclasses of the class.
      * @param <T>        The expected type of matching objects
-     * @return A list of matching objects. The list is immutable and contains strong references to the objects.
+     * @return An array of matching objects. The array is empty if no matching objects are found.
      * @throws IllegalArgumentException if the class is primitive or void
      */
     @SinceApi(API_103)
     @NonNull
-    <T> List<T> findInstances(@NonNull Class<T> clazz, boolean assignable);
+    <T> T[] findInstances(@NonNull Class<T> clazz, boolean assignable);
 
     /**
      * Scans the Java heap for live objects matching the supplied classes.
      *
      * @param classes    The classes to match. Primitive classes and {@code void.class} are not valid.
      * @param assignable Whether to match subclasses of the classes.
-     * @return An array of lists of matching objects. The array is in the same order as the input classes.
+     * @return An array of arrays of matching objects. Each inner array corresponds to the matching objects for the class
+     * at the same index in the input array. The inner arrays are empty if no matching objects are found for that class.
      * @throws IllegalArgumentException if any class is primitive, void or null
      * @see #findInstances(Class, boolean)
      */
     @SinceApi(API_103)
     @NonNull
-    List<?>[] findInstances(@NonNull Class<?>[] classes, boolean assignable);
+    Object[][] findInstances(@NonNull Class<?>[] classes, boolean assignable);
 
     /**
      * Writes a message to the Xposed log.
