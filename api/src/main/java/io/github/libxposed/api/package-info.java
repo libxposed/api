@@ -20,7 +20,7 @@
  * <p>Java entry classes are listed in {@code META-INF/xposed/java_init.list} (one fully-qualified
  * class name per line); native entries use {@code META-INF/xposed/native_init.list}. Place these
  * files under {@code src/main/resources/META-INF/xposed/} and Gradle will package them into the
- * APK automatically.</p>
+ * APK automatically. At least one Java entry must be provided.</p>
  *
  * <h2>Module Configuration</h2>
  *
