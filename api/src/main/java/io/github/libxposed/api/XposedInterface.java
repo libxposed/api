@@ -2,6 +2,7 @@ package io.github.libxposed.api;
 
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import io.github.libxposed.api.error.HookFailedError;
 import io.github.libxposed.annotation.SinceApi;
@@ -52,10 +54,19 @@ public interface XposedInterface {
     int API_102 = 102;
 
     /**
+     * API version 103.
+     * <p>New features</p>
+     * <ul>
+     * <li>Modules can bind to a module application service shared by hooked processes.</li>
+     * </ul>
+     */
+    int API_103 = 103;
+
+    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = API_102;
+    int LIB_API = API_103;
 
     /**
      * The framework has the capability to hook system_server and other system processes.
@@ -69,6 +80,10 @@ public interface XposedInterface {
      * The framework disallows accessing Xposed API via reflection or dynamically loaded code.
      */
     long PROP_RT_API_PROTECTION = 1L << 2;
+    /**
+     * The framework supports binding a module application service from hooked processes.
+     */
+    long PROP_CAP_REMOTE_SERVICE = 1L << 3;
 
     /**
      * The default hook priority.
@@ -329,6 +344,47 @@ public interface XposedInterface {
     }
 
     /**
+     * Receives changes to a module application's remote service connection.
+     */
+    @SinceApi(API_103)
+    interface RemoteServiceConnection {
+        /**
+         * Called when the service is connected. This can be called again with a new Binder after
+         * {@link #onServiceDisconnected()}.
+         *
+         * @param service Binder returned by the module application's Android service
+         */
+        void onServiceConnected(@NonNull IBinder service);
+
+        /**
+         * Called when a previously connected service dies. The framework keeps trying to maintain
+         * the binding while the returned handle remains open.
+         */
+        default void onServiceDisconnected() {
+        }
+
+        /**
+         * Called when the service cannot be bound. This is a terminal failure for this handle.
+         *
+         * @param message Framework-provided diagnostic message
+         */
+        default void onServiceConnectionFailed(@NonNull String message) {
+        }
+    }
+
+    /**
+     * Handle retaining a module application's remote service binding for this process.
+     */
+    @SinceApi(API_103)
+    interface RemoteServiceHandle extends AutoCloseable {
+        /**
+         * Releases this process's interest in the service. This method is idempotent.
+         */
+        @Override
+        void close();
+    }
+
+    /**
      * Exception handling mode for hookers. This determines how the framework handles exceptions
      * thrown by hookers. The default mode is {@link ExceptionMode#DEFAULT}.
      */
@@ -561,4 +617,26 @@ public interface XposedInterface {
      */
     @NonNull
     ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException;
+
+    /**
+     * Binds the service declared by the module application. All hooked processes using the same
+     * module and Android user share one Android service instance, but each call receives its own
+     * connection callbacks. The framework keeps the Android service bound while at least one
+     * hooked process retains a handle.
+     * <p>
+     * Callback methods are dispatched through {@code executor}. Binder transactions made through
+     * the returned service can still throw {@link android.os.DeadObjectException}; callers must not
+     * transparently retry non-idempotent transactions.
+     * </p>
+     *
+     * @param executor   Executor used for connection callbacks
+     * @param connection Connection callback
+     * @return Handle that releases this process's binding when closed
+     * @throws UnsupportedOperationException If the framework or module does not support a remote
+     *                                       service
+     */
+    @SinceApi(API_103)
+    @NonNull
+    RemoteServiceHandle bindRemoteService(@NonNull Executor executor,
+                                          @NonNull RemoteServiceConnection connection);
 }
