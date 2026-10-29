@@ -57,26 +57,16 @@ public interface XposedInterface {
      * API version 103.
      * <p>New features</p>
      * <ul>
-     * <li>Modules can run read-only SQL queries over a loaded package's APK/DEX via
-     * {@link XposedModuleInterface.PackageLoadedParam#openDex}.</li>
+     * <li>Modules can bind to a module application service shared by hooked processes.</li>
      * </ul>
      */
     int API_103 = 103;
 
     /**
-     * API version 104.
-     * <p>New features</p>
-     * <ul>
-     * <li>Modules can bind to a module application service shared by hooked processes.</li>
-     * </ul>
-     */
-    int API_104 = 104;
-
-    /**
      * The API version of this <b>library</b>. This is a static value for the framework.
      * Modules should use {@link #getApiVersion()} to check the API version at runtime.
      */
-    int LIB_API = API_104;
+    int LIB_API = API_103;
 
     /**
      * The framework has the capability to hook system_server and other system processes.
@@ -356,7 +346,7 @@ public interface XposedInterface {
     /**
      * Receives changes to a module application's remote service connection.
      */
-    @SinceApi(API_104)
+    @SinceApi(API_103)
     interface RemoteServiceConnection {
         /**
          * Called when the service is connected. This can be called again with a new Binder after
@@ -385,7 +375,7 @@ public interface XposedInterface {
     /**
      * Handle retaining a module application's remote service binding for this process.
      */
-    @SinceApi(API_104)
+    @SinceApi(API_103)
     interface RemoteServiceHandle extends AutoCloseable {
         /**
          * Releases this process's interest in the service. This method is idempotent.
@@ -646,7 +636,7 @@ public interface XposedInterface {
      * @throws UnsupportedOperationException If the framework or module does not support a remote
      *                                       service
      */
-    @SinceApi(API_104)
+    @SinceApi(API_103)
     @NonNull
     RemoteServiceHandle bindRemoteService(@NonNull Executor executor,
                                           @NonNull RemoteServiceConnection connection);
