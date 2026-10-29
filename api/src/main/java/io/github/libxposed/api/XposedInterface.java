@@ -81,11 +81,6 @@ public interface XposedInterface {
      */
     long PROP_RT_API_PROTECTION = 1L << 2;
     /**
-     * The framework supports binding a module application service from hooked processes.
-     */
-    long PROP_CAP_REMOTE_SERVICE = 1L << 3;
-
-    /**
      * The default hook priority.
      */
     int PRIORITY_DEFAULT = 50;
