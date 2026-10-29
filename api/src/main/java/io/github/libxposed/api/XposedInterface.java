@@ -624,9 +624,10 @@ public interface XposedInterface {
      * connection callbacks. The framework keeps the Android service bound while at least one
      * hooked process retains a handle.
      * <p>
-     * Callback methods are dispatched through {@code executor}. Binder transactions made through
-     * the returned service can still throw {@link android.os.DeadObjectException}; callers must not
-     * transparently retry non-idempotent transactions.
+     * Callback methods are serialized in connection order and dispatched through {@code executor}.
+     * Binder transactions made through the returned service can still throw
+     * {@link android.os.DeadObjectException}; callers must not transparently retry non-idempotent
+     * transactions.
      * </p>
      *
      * @param executor   Executor used for connection callbacks
