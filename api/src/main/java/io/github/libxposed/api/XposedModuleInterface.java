@@ -75,7 +75,6 @@ public interface XposedModuleInterface {
         @RequiresApi(Build.VERSION_CODES.Q)
         @NonNull
         ClassLoader getDefaultClassLoader();
-
     }
 
     /**
