@@ -22,6 +22,11 @@
  * files under {@code src/main/resources/META-INF/xposed/} and Gradle will package them into the
  * APK automatically.</p>
  *
+ * <p>An optional module application service is listed in {@code META-INF/xposed/service}. The file
+ * contains one fully-qualified Android service class name, and that service must also be declared
+ * in the module manifest with {@code android:exported="false"}. Hooked processes can connect to it
+ * through {@link io.github.libxposed.api.XposedInterface#bindRemoteService}.</p>
+ *
  * <h2>Module Configuration</h2>
  *
  * <p>Module metadata is specified via standard Android resources ({@code android:label} for the

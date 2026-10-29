@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Method;
+import java.util.concurrent.Executor;
 
 import io.github.libxposed.annotation.InternalApi;
 import io.github.libxposed.annotation.SinceApi;
@@ -188,5 +189,13 @@ public class XposedInterfaceWrapper implements XposedInterface {
     public final ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException {
         ensureAttached();
         return mBase.openRemoteFile(name);
+    }
+
+    @NonNull
+    @Override
+    public final RemoteServiceHandle bindRemoteService(@NonNull Executor executor,
+                                                       @NonNull RemoteServiceConnection connection) {
+        ensureAttached();
+        return mBase.bindRemoteService(executor, connection);
     }
 }
