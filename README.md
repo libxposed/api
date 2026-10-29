@@ -22,22 +22,27 @@ If minification is enabled, add these rules to the app's ProGuard/R8 configurati
 ```proguard
 -dontwarn io.github.libxposed.annotation.**
 -adaptresourcefilecontents META-INF/xposed/java_init.list
--adaptresourcefilecontents META-INF/xposed/service.list
+-adaptresourcefilecontents META-INF/xposed/service
 -keep,allowoptimization,allowobfuscation public class * extends io.github.libxposed.api.XposedModule {
     public <init>();
 }
 ```
 
-These rules keep module entry classes from being removed and rewrite the Xposed class-name lists
+These rules keep module entry classes from being removed and rewrite the Xposed class-name files
 when entry or service classes are obfuscated.
 
 ### Module application service
 
 API 103 modules can expose one Android service to their code running in hooked processes. Declare
 the service normally with `android:exported="false"`, then put its fully-qualified class name in
-`src/main/resources/META-INF/xposed/service.list`. Hooked processes connect through
-`XposedInterface.bindRemoteService`; the framework forwards the service's Binder without knowing
-the module-defined AIDL interface.
+`src/main/resources/META-INF/xposed/service`:
+
+```text
+com.example.module.RuntimeService
+```
+
+Hooked processes connect through `XposedInterface.bindRemoteService`; the framework forwards the
+service's Binder without knowing the module-defined AIDL interface.
 
 ### For Framework Developers
 
