@@ -76,19 +76,6 @@ public interface XposedModuleInterface {
         @NonNull
         ClassLoader getDefaultClassLoader();
 
-        /**
-         * Opens a read-only SQL view over this package's APK/DEX. The returned
-         * {@link DexDatabase} runs multiple {@link DexDatabase#query queries} and must be
-         * {@link DexDatabase#close() closed} when done.
-         *
-         * @return A {@link DexDatabase} over this package's dex
-         * @throws UnsupportedOperationException If the framework does not support dex queries
-         */
-        @SinceApi(XposedInterface.API_103)
-        @NonNull
-        default DexDatabase openDex() {
-            throw new UnsupportedOperationException("Framework does not support dex queries");
-        }
     }
 
     /**
