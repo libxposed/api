@@ -16,6 +16,7 @@ import java.util.List;
 
 import io.github.libxposed.api.error.HookFailedError;
 import io.github.libxposed.annotation.SinceApi;
+import io.github.libxposed.api.service.ServiceRegistry;
 
 /**
  * Xposed interface for modules to operate on application processes.
@@ -50,6 +51,8 @@ public interface XposedInterface {
      * </ul>
      */
     int API_102 = 102;
+
+    int API_103 = 103;
 
     /**
      * The API version of this <b>library</b>. This is a static value for the framework.
@@ -592,4 +595,8 @@ public interface XposedInterface {
      */
     @NonNull
     ParcelFileDescriptor openRemoteFile(@NonNull String name) throws FileNotFoundException;
+
+    @SinceApi(API_103)
+    @NonNull
+    ServiceRegistry getServiceRegistry();
 }
